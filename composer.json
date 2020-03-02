@@ -1,0 +1,61 @@
+{
+	"name": "simialbi/yii2-interactive-voting",
+	"type": "yii2-extension",
+	"description": "Interactive voting module for yii2",
+	"keywords": [
+		"yii2",
+		"vote",
+		"voting",
+		"interactive voting"
+	],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "simialbi",
+			"email": "simi.albi@outlook.com"
+		}
+	],
+	"support": {
+		"source": "https://github.com/simialbi/yii2-interactive-vote",
+		"issues": "https://github.com/simialbi/yii2-interactive-vote/issues"
+	},
+	"prefer-stable": true,
+	"require": {
+		"php": ">=7.0",
+		"yiisoft/yii2": "^2.0.20",
+		"yiisoft/yii2-bootstrap4": "^2.0.4",
+		"arogachev/yii2-sortable": "^0.1.6",
+		"fortawesome/font-awesome": "^5.12.0",
+		"kartik-v/yii2-widget-datepicker": "^1.4.7",
+		"kartik-v/yii2-widget-fileinput": "^1.0.9",
+		"simialbi/yii2-fontawesome": "^3.4.8",
+		"simialbi/yii2-simialbi-base": ">=0.6 <1.0 | ^1.0.0",
+		"simialbi/yii2-widget-chart": "^0.6.5",
+		"simialbi/yii2-widget-hideseek": "^1.0.0"
+	},
+	"require-dev": {
+		"yiisoft/yii2-coding-standards": "~2.0",
+		"phpunit/phpunit": "<7"
+	},
+	"autoload": {
+		"psr-4": {
+			"simialbi\\yii2\\voting\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"yiiunit\\extensions\\voting\\": "tests"
+		}
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://asset-packagist.org"
+		}
+	],
+	"extra": {
+		"branch-alias": {
+			"dev-master": "1.0.x-dev"
+		}
+	}
+}
