@@ -107,7 +107,7 @@ class m200302_161104_init extends Migration
             '{{%voting_question_answer_ibfk_2}}',
             '{{%voting_question_answer}}',
             'answer_id',
-            '{{%voting_question}}',
+            '{{%voting_answer}}',
             'id',
             'CASCADE',
             'CASCADE'
