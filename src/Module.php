@@ -9,9 +9,11 @@ namespace simialbi\yii2\voting;
 
 use simialbi\yii2\models\UserInterface;
 use Yii;
+use yii\base\Application;
+use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
 
-class Module extends \simialbi\yii2\base\Module
+class Module extends \simialbi\yii2\base\Module implements BootstrapInterface
 {
     /**
      * {@inheritDoc}
@@ -44,5 +46,16 @@ class Module extends \simialbi\yii2\base\Module
         }
 
         parent::init();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function bootstrap($app)
+    {
+        if ($app instanceof \yii\console\Application) {
+            $this->controllerNamespace = 'simialbi\yii2\voting\commands';
+        }
     }
 }

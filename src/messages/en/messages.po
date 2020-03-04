@@ -50,6 +50,10 @@ msgctxt "simialbi/voting"
 msgid "You must select one of the options."
 msgstr "You must select one of the options."
 
+msgctxt "simialbi/voting"
+msgid "Your Code for {voting}\n{code}"
+msgstr "Your Code for {voting}\n{code}"
+
 msgctxt "simialbi/voting/answer"
 msgid "Answers"
 msgstr "Answers"
