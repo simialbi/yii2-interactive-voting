@@ -26,7 +26,15 @@ class SmsController extends Controller
      */
     public $token;
 
-    public function actionSendSMS($numberField = 'mobile')
+    /**
+     * Send automatically all sms codes from all invitees to the invitees
+     *
+     * @param string $numberField The field of the user identity class containing the mobile number
+     *
+     * @return integer Exit code
+     * @throws \yii\httpclient\Exception
+     */
+    public function actionSendSms($numberField = 'mobile')
     {
         $client = new Client([
             'baseUrl' => $this->baseUrl,
