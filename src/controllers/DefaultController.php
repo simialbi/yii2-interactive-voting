@@ -43,7 +43,7 @@ class DefaultController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['live', 'status']
+                        'actions' => ['live', 'chart-data', 'status']
                     ]
                 ]
             ]
