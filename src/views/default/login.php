@@ -15,20 +15,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
-        'layout' => ActiveForm::LAYOUT_HORIZONTAL,
         'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-3\">{input}\n{error}</div><div class=\"col-lg-8\">{hint}</div>",
-            'labelOptions' => ['class' => 'col-lg-1 control-label'],
+            'options' => ['class' => ['form-group', 'col-12', 'col-lg-6', 'offset-lg-3']]
         ],
     ]); ?>
 
-    <?= $form->field($model, 'username')->textInput(['autofocus' => true]); ?>
-
-    <?= $form->field($model, 'code')->passwordInput(); ?>
-
-    <div class="form-group row">
-        <div class="col-lg-offset-1 col-lg-11">
-            <?= Html::submitButton('Login', ['class' => ['btn', 'btn-primary'], 'name' => 'login-button']) ?>
+    <div class="form-row">
+        <?= $form->field($model, 'username')->textInput(['autofocus' => true]); ?>
+    </div>
+    <div class="form-row">
+        <?= $form->field($model, 'code')->passwordInput(); ?>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12 col-lg-6 offset-lg-3">
+            <?= Html::submitButton('Login', ['class' => ['btn', 'btn-primary', 'btn-block'], 'name' => 'login-button']) ?>
         </div>
     </div>
 

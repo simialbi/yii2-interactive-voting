@@ -276,7 +276,7 @@ msgstr "Frage abschliessen"
 
 msgctxt "simialbi/voting/question"
 msgid "Create Question"
-msgstr "Frage erstellt"
+msgstr "Frage erstellen"
 
 msgctxt "simialbi/voting/question"
 msgid "Open this question"

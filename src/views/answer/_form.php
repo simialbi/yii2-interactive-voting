@@ -15,7 +15,7 @@ use yii\bootstrap4\Html;
         'action' => ['answer/create', 'questionId' => $model->question_id]
     ]); ?>
 
-    <?= $form->field($model, 'text')->textInput(['maxlength' => true]); ?>
+    <?= $form->field($model, 'text')->textInput(['autofocus' => true, 'maxlength' => true]); ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('simialbi/voting', 'Save'), ['class' => ['btn', 'btn-success']]); ?>

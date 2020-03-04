@@ -50,6 +50,10 @@ class DefaultController extends Controller
         ];
     }
 
+    /**
+     * List all active votings
+     * @return string
+     */
     public function actionIndex()
     {
         $votings = Voting::find()
@@ -64,6 +68,14 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * Display active question or result of a specific voting
+     *
+     * @param integer $votingId
+     *
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionView($votingId)
     {
         $model = $this->findVotingModel($votingId);
@@ -93,11 +105,6 @@ class DefaultController extends Controller
             ])
             ->orderBy(['{{q}}.[[created_at]]' => SORT_DESC]);
 
-
-//        echo "<pre>";
-//        var_dump($lastQuestion->createCommand()->rawSql);
-//        exit("</pre>");
-
         return $this->render('view', [
             'voting' => $model,
             'question' => $question->one(),
@@ -105,6 +112,14 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * Display live results of the latest question of a voting
+     *
+     * @param integer $votingId
+     *
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionLive($votingId)
     {
         $model = $this->findVotingModel($votingId);
@@ -119,6 +134,14 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * Save answer
+     *
+     * @param integer $questionId
+     *
+     * @return Response
+     * @throws NotFoundHttpException
+     */
     public function actionSaveAnswer($questionId)
     {
         $question = $this->findQuestionModel($questionId);
@@ -140,6 +163,14 @@ class DefaultController extends Controller
         return $this->redirect(['view', 'votingId' => $question->voting_id]);
     }
 
+    /**
+     * Load updated chart data. Result is a JSON response.
+     *
+     * @param integer $questionId
+     *
+     * @return array
+     * @throws NotFoundHttpException
+     */
     public function actionChartData($questionId)
     {
         $model = $this->findQuestionModel($questionId);
@@ -160,6 +191,15 @@ class DefaultController extends Controller
         return array_values($data);
     }
 
+    /**
+     * Poll voting status. Answer is a JSON response.
+     *
+     * @param integer $votingId
+     * @param string|null $referrer
+     *
+     * @return array
+     * @throws NotFoundHttpException
+     */
     public function actionStatus($votingId, $referrer = null)
     {
         $model = $this->findVotingModel($votingId);
@@ -194,6 +234,11 @@ class DefaultController extends Controller
         return ['action' => 'poll'];
     }
 
+    /**
+     * Login with email and code
+     *
+     * @return string|Response
+     */
     public function actionLogin()
     {
         $model = new LoginForm();

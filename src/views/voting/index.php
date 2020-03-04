@@ -160,6 +160,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             'data-pjax' => '0'
                         ]);
                     }
+                ],
+                'visibleButtons' => [
+                    'activate' => function ($model) {
+                        /** @var $model \simialbi\yii2\voting\models\Voting */
+                        return !$model->is_active && !$model->is_finished;
+                    }
                 ]
             ],
 

@@ -109,6 +109,24 @@ class VotingController extends Controller
     }
 
     /**
+     * Activates an existing Voting model.
+     *
+     * @param integer $id
+     *
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionActivate($id)
+    {
+        $model = $this->findModel($id);
+
+        $model->is_active = true;
+        $model->save();
+
+        return $this->redirect(['voting/index']);
+    }
+
+    /**
      * Finds the Voting model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
