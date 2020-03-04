@@ -44,7 +44,7 @@ class SmsController extends Controller
             ],
             'responseConfig' => [
                 'class' => 'yii\httpclient\Response',
-                'format' => Client::FORMAT_JSON
+                'format' => Client::FORMAT_RAW_URLENCODED
             ]
         ]);
         $headers = [];
@@ -67,7 +67,7 @@ class SmsController extends Controller
             $headers['Authorization'] = "Bearer {$this->token}";
         }
 
-        if (!$voting->getInvitees()->count('id')) {
+        if (!$voting->getInvitees()->count('user_id')) {
             $this->stderr('There are no invitees');
             $this->stderr(' ... quitting', Console::FG_YELLOW);
             $this->stderr("\n");
@@ -93,7 +93,7 @@ class SmsController extends Controller
                     'code' => $invitee->code
                 ]),
                 'messageType' => 'default',
-                'recipientAddressList' => preg_replace('#^[0-9]#', '', $number)
+                'recipientAddressList' => preg_replace('#[^0-9]#', '', $number)
             ];
 
             $this->stdout("Sending code `{$invitee->code}` to: ");
@@ -101,8 +101,9 @@ class SmsController extends Controller
 
             $request = $client->post('/rest/smsmessaging/simple', $data, $headers);
             $response = $request->send();
+            $status = ArrayHelper::getValue($response->data, 'statusCode', 4002);
 
-            if ($response->isOk) {
+            if (preg_match('#^200#', $status)) {
                 $this->stdout(' ... success', Console::FG_GREEN);
             } else {
                 $message = ArrayHelper::getValue($response->data, 'statusMessage');
