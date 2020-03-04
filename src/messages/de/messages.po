@@ -92,7 +92,7 @@ msgstr "Code"
 
 msgctxt "simialbi/voting/model/login-form"
 msgid "The Code you received by SMS"
-msgstr "Der Code den Sie per SMS erhalten haben"
+msgstr "SMS-Code"
 
 msgctxt "simialbi/voting/model/login-form"
 msgid "Username"
