@@ -2,12 +2,10 @@
 
 namespace simialbi\yii2\voting\controllers;
 
-use Yii;
 use simialbi\yii2\voting\models\Answer;
-use simialbi\yii2\voting\models\SearchAnswer;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * AnswerController implements the CRUD actions for Answer model.
@@ -30,34 +28,6 @@ class AnswerController extends Controller
 //    }
 
     /**
-     * Lists all Answer models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new SearchAnswer();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Answer model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Answer model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      *
@@ -78,26 +48,6 @@ class AnswerController extends Controller
         }
 
         return $this->renderAjax('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing Answer model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
             'model' => $model,
         ]);
     }
@@ -142,6 +92,6 @@ class AnswerController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('simialbi/voting/answer', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
     }
 }

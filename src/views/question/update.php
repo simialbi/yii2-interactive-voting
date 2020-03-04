@@ -10,7 +10,7 @@ $this->title = Yii::t('simialbi/voting/question', 'Update Question: {name}', [
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('simialbi/voting/question', 'Questions'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('simialbi/voting/question', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('simialbi/voting', 'Update');
 ?>
 <div class="question-update">
 

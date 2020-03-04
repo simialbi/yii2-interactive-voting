@@ -40,6 +40,10 @@ class DefaultController extends Controller
                         'allow' => true,
                         'actions' => ['login'],
                         'roles' => ['?']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['live', 'status']
                     ]
                 ]
             ]
@@ -64,7 +68,7 @@ class DefaultController extends Controller
     {
         $model = $this->findVotingModel($votingId);
 
-        $query = $model->getQuestions()->alias('q')->orderBy(['{{q}}.[[created_at]]' => SORT_ASC]);
+        $query = $model->getQuestions()->alias('q')->orderBy(['{{q}}.[[started_at]]' => SORT_ASC]);
         $subQuery = QuestionAnswer::find()
             ->select(new Expression('COUNT({{qa}}.[[id]])'))
             ->alias('qa')
@@ -91,12 +95,26 @@ class DefaultController extends Controller
 
 
 //        echo "<pre>";
-//        var_dump($query->createCommand()->rawSql);
+//        var_dump($lastQuestion->createCommand()->rawSql);
 //        exit("</pre>");
 
         return $this->render('view', [
             'voting' => $model,
             'question' => $question->one(),
+            'lastQuestion' => $lastQuestion->one()
+        ]);
+    }
+
+    public function actionLive($votingId)
+    {
+        $model = $this->findVotingModel($votingId);
+        $query = $model->getQuestions()->alias('q')->orderBy(['{{q}}.[[created_at]]' => SORT_ASC]);
+        $lastQuestion = $query
+            ->where(['{{q}}.[[is_active]]' => true])
+            ->orderBy(['{{q}}.[[started_at]]' => SORT_DESC]);
+
+        return $this->render('live', [
+            'voting' => $model,
             'lastQuestion' => $lastQuestion->one()
         ]);
     }
@@ -115,11 +133,11 @@ class DefaultController extends Controller
                 'answer_id' => $answer
             ]);
             $questionAnswer->save();
-
-            return $this->redirect(['view', 'votingId' => $question->voting_id]);
+        } else {
+            Yii::$app->session->addFlash('warning', Yii::t('simialbi/voting', 'You must select one of the options.'));
         }
 
-        return $this->renderAjax();
+        return $this->redirect(['view', 'votingId' => $question->voting_id]);
     }
 
     public function actionChartData($questionId)
@@ -142,24 +160,35 @@ class DefaultController extends Controller
         return array_values($data);
     }
 
-    public function actionStatus($votingId)
+    public function actionStatus($votingId, $referrer = null)
     {
         $model = $this->findVotingModel($votingId);
 
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $newQuestion = $model->getQuestions()->alias('q')->orderBy(['{{q}}.[[created_at]]' => SORT_ASC]);
-        $subQuery = QuestionAnswer::find()
-            ->select(new Expression('COUNT({{qa}}.[[id]])'))
-            ->alias('qa')
-            ->where('{{qa}}.[[question_id]] = {{q}}.[[id]]')
-            ->andWhere(['{{qa}}.[[session_id]]' => Yii::$app->session->id]);
-        $question = $newQuestion
+        $question = $model->getQuestions()
+            ->alias('q')
             ->where(['{{q}}.[[is_active]]' => true, '{{q}}.[[is_finished]]' => false])
-            ->andWhere(['=', $subQuery, 0]);
+            ->orderBy(['{{q}}.[[created_at]]' => SORT_ASC]);
+        if (!Yii::$app->user->isGuest && null === $referrer) {
+            $subQuery = QuestionAnswer::find()
+                ->select(new Expression('COUNT({{qa}}.[[id]])'))
+                ->alias('qa')
+                ->where('{{qa}}.[[question_id]] = {{q}}.[[id]]')
+                ->andWhere(['{{qa}}.[[session_id]]' => Yii::$app->session->id]);
+            $question->andWhere(['=', $subQuery, 0]);
+        }
 
         if ($question->count('{{q}}.[[id]]')) {
-            return ['action' => 'redirect', 'target' => Url::to(['default/view', 'votingId' => $votingId], true)];
+            if (null !== $referrer) {
+                return [
+                    'action' => 'redirect',
+                    'target' => Url::to(["default/$referrer", 'votingId' => $votingId], true),
+                    'newQuestion' => $question->one()->toArray()
+                ];
+            } else {
+                return ['action' => 'redirect', 'target' => Url::to(['default/view', 'votingId' => $votingId], true)];
+            }
         }
 
         return ['action' => 'poll'];
@@ -180,7 +209,7 @@ class DefaultController extends Controller
                 $invitee = Invitee::findOne(['user_id' => $id, 'code' => $model->code]);
                 if ($invitee) {
                     $identity = call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $id);
-                    Yii::$app->user->login($identity, 3600 * 3);
+                    Yii::$app->user->login($identity, 3600 * 5);
 
                     return $this->redirect(['index']);
                 }
@@ -210,7 +239,7 @@ class DefaultController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('simialbi/voting/question', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
     }
 
     /**
@@ -226,6 +255,6 @@ class DefaultController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('simialbi/voting/question', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
     }
 }

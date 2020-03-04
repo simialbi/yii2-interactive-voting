@@ -170,7 +170,8 @@ class QuestionController extends Controller
             $voting->save();
         }
 
-        $query = $model->voting->getQuestions()->where(['is_active' => true])->andWhere(['<>', 'id', $model->id]);
+        $query = $model->voting->getQuestions()->where(['is_active' => true, 'is_finished' => false])
+            ->andWhere(['<>', 'id', $model->id]);
         if ($query->count()) {
             Yii::$app->session->addFlash('warning', Yii::t(
                 'simialbi/voting/question',
@@ -196,7 +197,7 @@ class QuestionController extends Controller
     {
         $model = $this->findModel($id);
 
-        $model->is_active = false;
+        $model->is_finished = true;
         $model->save();
 
         return $this->redirect(['voting/view', 'id' => $model->voting_id]);
@@ -215,6 +216,6 @@ class QuestionController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('simialbi/voting/question', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
     }
 }

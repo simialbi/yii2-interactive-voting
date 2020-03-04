@@ -5,6 +5,7 @@ namespace simialbi\yii2\voting\models;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%voting_answer}}".
@@ -22,7 +23,7 @@ use yii\behaviors\TimestampBehavior;
  * @property-read \simialbi\yii2\models\UserInterface $creator
  * @property-read \simialbi\yii2\models\UserInterface $updater
  */
-class Answer extends \yii\db\ActiveRecord
+class Answer extends ActiveRecord
 {
     /**
      * {@inheritDoc}
@@ -82,7 +83,7 @@ class Answer extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('simialbi/voting/model/voting-answer', 'ID'),
-            'question_id' => Yii::t('simialbi/voting/model/voting-answer', 'Question ID'),
+            'question_id' => Yii::t('simialbi/voting/model/voting-answer', 'Question'),
             'text' => Yii::t('simialbi/voting/model/voting-answer', 'Text'),
             'created_by' => Yii::t('simialbi/voting/model/voting-answer', 'Created by'),
             'updated_by' => Yii::t('simialbi/voting/model/voting-answer', 'Updated by'),

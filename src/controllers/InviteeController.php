@@ -96,6 +96,6 @@ class InviteeController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('simialbi/voting/invitee', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
     }
 }

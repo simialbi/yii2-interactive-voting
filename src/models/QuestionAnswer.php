@@ -4,6 +4,7 @@ namespace simialbi\yii2\voting\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%voting_question_answer}}".
@@ -19,7 +20,7 @@ use yii\behaviors\TimestampBehavior;
  * @property-read Question $question
  * @property-read Answer $answer
  */
-class QuestionAnswer extends \yii\db\ActiveRecord
+class QuestionAnswer extends ActiveRecord
 {
     /**
      * {@inheritDoc}
@@ -81,12 +82,12 @@ class QuestionAnswer extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('simialbi/voting/model/voting-question-answer', 'ID'),
-            'question_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'Question ID'),
-            'answer_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'Answer ID'),
-            'user_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'User ID'),
+            'question_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'Question'),
+            'answer_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'Answer'),
+            'user_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'User'),
             'user_ip' => Yii::t('simialbi/voting/model/voting-question-answer', 'User Ip'),
-            'session_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'Session ID'),
-            'created_at' => Yii::t('simialbi/voting/model/voting-question-answer', 'Created At'),
+            'session_id' => Yii::t('simialbi/voting/model/voting-question-answer', 'Session'),
+            'created_at' => Yii::t('simialbi/voting/model/voting-question-answer', 'Created at'),
         ];
     }
 

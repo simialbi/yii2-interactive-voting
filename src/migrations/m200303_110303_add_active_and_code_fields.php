@@ -37,6 +37,18 @@ class m200303_110303_add_active_and_code_fields extends Migration
             $this->boolean()->notNull()->defaultValue(0)->after('is_active')->comment('Is the question finished?')
         );
         $this->addColumn(
+            '{{%voting_question}}',
+            'started_at',
+            $this->integer()->unsigned()->null()->defaultValue(null)->after('updated_at')
+                ->comment('When did the answering of this question start?')
+        );
+        $this->addColumn(
+            '{{%voting_question}}',
+            'ended_at',
+            $this->integer()->unsigned()->null()->defaultValue(null)->after('started_at')
+                ->comment('When did the answering of this question end?')
+        );
+        $this->addColumn(
             '{{%voting_invitee}}',
             'code',
             $this->char(10)->notNull()->after('user_id')
@@ -83,6 +95,8 @@ SQL;
         }
 
         $this->dropIndex('{{%voting_invitee_idx_unique_code}}', '{{%voting_invitee}}');
+        $this->dropColumn('{{%voting_question}}', 'ended_at');
+        $this->dropColumn('{{%voting_question}}', 'started_at');
         $this->dropColumn('{{%voting_question}}', 'is_finished');
         $this->dropColumn('{{%voting_question}}', 'is_active');
         $this->dropColumn('{{%voting}}', 'is_finished');

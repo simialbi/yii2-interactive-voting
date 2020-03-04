@@ -5,6 +5,7 @@ use kartik\select2\Select2;
 use rmrevin\yii\fontawesome\FAS;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\Modal;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -31,10 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
         </h1>
 
         <p>
-            <?= Html::a(Yii::t('simialbi/voting/voting', 'Delete'), ['delete', 'id' => $model->id], [
+            <?= Html::a(Yii::t('simialbi/voting', 'Delete'), ['delete', 'id' => $model->id], [
                 'class' => 'btn btn-danger',
                 'data' => [
-                    'confirm' => Yii::t('simialbi/voting/voting', 'Are you sure you want to delete this item?'),
+                    'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'method' => 'post',
                 ],
             ]) ?>
@@ -131,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'value' => function () {
                                 return GridView::ROW_COLLAPSED;
                             },
-                            'detailUrl' => \yii\helpers\Url::to(['question/view']),
+                            'detailUrl' => Url::to(['question/view']),
                             'expandOneOnly' => true,
                             'expandIcon' => (string)FAS::i('caret-square-right'),
                             'collapseIcon' => (string)FAS::i('caret-square-up')
@@ -218,11 +219,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             'visibleButtons' => [
                                 'activate' => function ($model) {
                                     /** @var $model \simialbi\yii2\voting\models\Question */
-                                    return !$model->is_active;
+                                    return !$model->is_active && !$model->is_finished;
                                 },
                                 'deactivate' => function ($model) {
                                     /** @var $model \simialbi\yii2\voting\models\Question */
-                                    return $model->is_active;
+                                    return $model->is_active && !$model->is_finished;
                                 }
                             ]
                         ],

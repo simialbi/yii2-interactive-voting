@@ -1,14 +1,8 @@
 <?php
 
 use rmrevin\yii\fontawesome\FAS;
-use simialbi\yii2\chart\models\axis\CategoryAxis;
-use simialbi\yii2\chart\models\axis\ValueAxis;
-use simialbi\yii2\chart\models\data\JSONParser;
-use simialbi\yii2\chart\models\series\ColumnSeries;
-use simialbi\yii2\chart\widgets\LineChart;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
-use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $voting simialbi\yii2\voting\models\Voting */
@@ -23,7 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1 class="mb-3"><?= Html::encode($this->title); ?></h1>
 
     <?php if ($question): ?>
-        <?= Html::beginForm(['save-answer', 'questionId' => $question->id]); ?>
+        <?= Html::beginForm(['save-answer', 'questionId' => $question->id], 'post', [
+            'id' => 'answerForm'
+        ]); ?>
         <div class="card mb-4">
             <div class="card-header">
                 <h4 class="card-title mb-0"><?= $question->subject; ?></h4>
@@ -60,46 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?= Html::endForm(); ?>
     <?php elseif ($lastQuestion): ?>
-        <?php $series = new ColumnSeries([
-            'dataFields' => [
-                'categoryX' => 'answer',
-                'valueY' => 'count'
-            ],
-            'name' => Yii::t('simialbi/voting/answer', 'Answers')
-        ]); ?>
-        <?php $series->appendix = new JsExpression("
-{$series->varName}.columns.template.tooltipText = '{valueY.value}';
-{$series->varName}.columns.template.adapter.add('fill', function(fill, target) {
-    return chartResultChart.colors.getIndex(target.dataItem.index);
-});"); ?>
-        <?= LineChart::widget([
-            'series' => [$series],
-            'options' => [
-                'id' => 'resultChart',
-                'style' => [
-                    'width' => '100%',
-                    'height' => '400px',
-                    'max-height' => '100vh'
-                ]
-            ],
-            'axes' => [
-                new CategoryAxis([
-                    'dataFields' => [
-                        'category' => 'answer'
-                    ]
-                ]),
-                new ValueAxis()
-            ],
-            'dataSource' => [
-                'url' => Url::to(['default/chart-data', 'questionId' => $lastQuestion->id]),
-                'parser' => new JSONParser([
-                    'options' => [
-                        'emptyAs' => 0,
-                        'numberFields' => ['count']
-                    ]
-                ]),
-                'reloadFrequency' => 5000
-            ]
+        <?= $this->render('_chart', [
+            'lastQuestion' => $lastQuestion
         ]); ?>
     <?php endif; ?>
 </div>
