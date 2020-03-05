@@ -66,6 +66,11 @@ class m200302_161104_init extends Migration
             'session_id' => $this->string(255)->notNull(),
             'created_at' => $this->integer()->unsigned()->notNull()
         ]);
+        $this->createTable('{{%voting_question_user_answered}}', [
+            'question_id' => $this->integer()->unsigned()->notNull(),
+            'user_id' => $this->string(64)->notNull(),
+            'PRIMARY KEY ([[question_id]], [[user_id]])'
+        ]);
 
         $this->addForeignKey(
             '{{%voting_question_ibfk_1}}',
@@ -112,6 +117,15 @@ class m200302_161104_init extends Migration
             'CASCADE',
             'CASCADE'
         );
+        $this->addForeignKey(
+            '{{%voting_question_user_answered_ibfk_1}}',
+            '{{%voting_question_user_answered}}',
+            'question_id',
+            '{{%voting_question}}',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
     }
 
     /**
@@ -119,12 +133,14 @@ class m200302_161104_init extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('{{%voting_question_user_answered_ibfk_1}}', '{{%voting_question_user_answered}}');
         $this->dropForeignKey('{{%voting_question_answer_ibfk_2}}', '{{%voting_question_answer}}');
         $this->dropForeignKey('{{%voting_question_answer_ibfk_1}}', '{{%voting_question_answer}}');
         $this->dropForeignKey('{{%voting_answer_ibfk_1}}', '{{%voting_answer}}');
         $this->dropForeignKey('{{%voting_invitee_ibfk_1}}', '{{%voting_invitee}}');
         $this->dropForeignKey('{{%voting_question_ibfk_1}}', '{{%voting_question}}');
 
+        $this->dropTable('{{%voting_question_user_answered}}');
         $this->dropTable('{{%voting_question_answer}}');
         $this->dropTable('{{%voting_answer}}');
         $this->dropTable('{{%voting_invitee}}');

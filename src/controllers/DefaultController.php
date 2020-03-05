@@ -14,6 +14,7 @@ use simialbi\yii2\voting\models\QuestionAnswer;
 use simialbi\yii2\voting\models\Voting;
 use Yii;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -81,29 +82,28 @@ class DefaultController extends Controller
         $model = $this->findVotingModel($votingId);
 
         $query = $model->getQuestions()->alias('q')->orderBy(['{{q}}.[[started_at]]' => SORT_ASC]);
-        $subQuery = QuestionAnswer::find()
-            ->select(new Expression('COUNT({{qa}}.[[id]])'))
-            ->alias('qa')
-            ->where('{{qa}}.[[question_id]] = {{q}}.[[id]]')
-            ->andWhere(['{{qa}}.[[session_id]]' => Yii::$app->session->id]);
         $query2 = clone $query;
+        $subQuery = (new Query())
+            ->select(new Expression('COUNT({{qa}}.[[question_id]])'))
+            ->from(['qa' => '{{%voting_question_user_answered}}'])
+            ->where('{{qa}}.[[question_id]] = {{q}}.[[id]]')
+            ->andWhere(['{{qa}}.[[user_id]]' => Yii::$app->user->id]);
         $question = $query
             ->where(['{{q}}.[[is_active]]' => true, '{{q}}.[[is_finished]]' => false])
             ->andWhere(['=', $subQuery, 0]);
         $lastQuestion = $query2
-            ->joinWith([
-                'questionAnswers qa' => function ($query) {
-                    /** @var $query \yii\db\ActiveQuery */
-                    $query->andOnCondition(['{{qa}}.[[session_id]]' => Yii::$app->session->id]);
-                }
-            ])
+            ->leftJoin(
+                ['qa' => '{{%voting_question_user_answered}}'],
+                '{{qa}}.[[question_id]] = {{q}}.[[id]] AND {{qa}}.[[user_id]] = :userId',
+                [':userId' => Yii::$app->user->id]
+            )
             ->where(['{{q}}.[[is_active]]' => true])
             ->andWhere([
                 'or',
                 ['{{q}}.[[is_finished]]' => true],
-                ['not', ['{{qa}}.[[id]]' => null]]
+                ['not', ['{{qa}}.[[question_id]]' => null]]
             ])
-            ->orderBy(['{{q}}.[[created_at]]' => SORT_DESC]);
+            ->orderBy(['{{q}}.[[started_at]]' => SORT_DESC]);
 
         return $this->render('view', [
             'voting' => $model,
@@ -141,6 +141,7 @@ class DefaultController extends Controller
      *
      * @return Response
      * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
      */
     public function actionSaveAnswer($questionId)
     {
@@ -156,6 +157,10 @@ class DefaultController extends Controller
                 'answer_id' => $answer
             ]);
             $questionAnswer->save();
+            Yii::$app->db->createCommand()->insert('{{%voting_question_user_answered}}', [
+                'question_id' => $questionId,
+                'user_id' => Yii::$app->user->id
+            ])->execute();
         } else {
             Yii::$app->session->addFlash('warning', Yii::t('simialbi/voting', 'You must select one of the options.'));
         }
@@ -211,11 +216,11 @@ class DefaultController extends Controller
             ->where(['{{q}}.[[is_active]]' => true, '{{q}}.[[is_finished]]' => false])
             ->orderBy(['{{q}}.[[created_at]]' => SORT_ASC]);
         if (!Yii::$app->user->isGuest && null === $referrer) {
-            $subQuery = QuestionAnswer::find()
-                ->select(new Expression('COUNT({{qa}}.[[id]])'))
-                ->alias('qa')
+            $subQuery = (new Query())
+                ->select(new Expression('COUNT({{qa}}.[[question_id]])'))
+                ->from(['qa' => '{{%voting_question_user_answered}}'])
                 ->where('{{qa}}.[[question_id]] = {{q}}.[[id]]')
-                ->andWhere(['{{qa}}.[[session_id]]' => Yii::$app->session->id]);
+                ->andWhere(['{{qa}}.[[user_id]]' => Yii::$app->user->id]);
             $question->andWhere(['=', $subQuery, 0]);
         }
 
