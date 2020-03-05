@@ -15,7 +15,7 @@ use yii\web\JsExpression;
 
     <h3><?= Html::encode($lastQuestion->subject); ?></h3>
 <?php if (!empty($lastQuestion->description)): ?>
-    <?= Yii::$app->formatter->asParagraphs($lastQuestion->description); ?>
+    <?= Yii::$app->formatter->asNtext($lastQuestion->description); ?>
 <?php endif; ?>
 <?php $series = new ColumnSeries([
     'dataFields' => [

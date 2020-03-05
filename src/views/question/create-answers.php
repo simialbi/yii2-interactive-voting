@@ -12,7 +12,7 @@ use yii\widgets\Pjax;
     <div class="row">
         <div class="col-12">
             <h2><?= $model->subject; ?></h2>
-            <?= Yii::$app->formatter->asParagraphs($model->description); ?>
+            <?= Yii::$app->formatter->asNtext($model->description); ?>
         </div>
     </div>
 

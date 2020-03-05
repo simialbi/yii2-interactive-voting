@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="card-body">
                 <?php if ($question->description): ?>
-                    <?= Yii::$app->formatter->asParagraphs($question->description); ?>
+                    <?= Yii::$app->formatter->asNtext($question->description); ?>
                 <?php endif; ?>
                 <div class="form-group">
                     <div class="btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
