@@ -14,6 +14,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $description Details to the voting
  * @property boolean $is_active Currently activated voting
  * @property boolean $is_finished Is the voting finished?
+ * @property boolean $is_moderated Is the voting moderated?
+ * @property boolean $is_with_mobile_registration Does the user can enter his mobile number in login form and get's the code via SMS
  * @property string|integer $created_by
  * @property string|integer $updated_by
  * @property string|integer $created_at
@@ -42,11 +44,12 @@ class Voting extends \yii\db\ActiveRecord
         return [
             [['description'], 'string'],
             [['subject'], 'string', 'max' => 255],
-            [['is_active', 'is_finished'], 'boolean'],
+            [['is_active', 'is_finished', 'is_moderated', 'is_with_mobile_registration'], 'boolean'],
 
-            [['is_active', 'is_finished'], 'default', 'value' => false],
+            [['is_moderated'], 'default', 'value' => true],
+            [['is_active', 'is_finished', 'is_with_mobile_registration'], 'default', 'value' => false],
 
-            [['subject', 'is_active', 'is_finished'], 'required'],
+            [['subject', 'is_active', 'is_finished', 'is_moderated', 'is_with_mobile_registration'], 'required'],
         ];
     }
 
@@ -84,10 +87,25 @@ class Voting extends \yii\db\ActiveRecord
             'description' => Yii::t('simialbi/voting/model/voting', 'Description'),
             'is_active' => Yii::t('simialbi/voting/model/voting', 'Is active'),
             'is_finished' => Yii::t('simialbi/voting/model/voting', 'Is finished'),
+            'is_moderated' => Yii::t('simialbi/voting/model/voting', 'Is moderated'),
+            'is_with_mobile_registration' => Yii::t('simialbi/voting/model/voting', 'With mobile registration'),
             'created_by' => Yii::t('simialbi/voting/model/voting', 'Created by'),
             'updated_by' => Yii::t('simialbi/voting/model/voting', 'Updated by'),
             'created_at' => Yii::t('simialbi/voting/model/voting', 'Created at'),
             'updated_at' => Yii::t('simialbi/voting/model/voting', 'Updated at'),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function attributeHints()
+    {
+        return [
+            'is_with_mobile_registration' => Yii::t(
+                'simialbi/voting/model/voting',
+                'Does the user can enter his mobile number in login form and get\'s the code via SMS.'
+            )
         ];
     }
 

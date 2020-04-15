@@ -7,6 +7,7 @@ use simialbi\yii2\voting\models\Question;
 use simialbi\yii2\voting\models\SearchAnswer;
 use simialbi\yii2\voting\models\SearchQuestion;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -23,6 +24,26 @@ class QuestionController extends Controller
     public function behaviors()
     {
         return [
+            'auth' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'roles' => ['@']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['activate', 'deactivate'],
+                        'roles' => ['manageVoting']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete'],
+                        'roles' => ['administrateVoting']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [

@@ -4,6 +4,7 @@ namespace simialbi\yii2\voting\controllers;
 
 use simialbi\yii2\voting\models\Answer;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -15,17 +16,27 @@ class AnswerController extends Controller
     /**
      * {@inheritdoc}
      */
-//    public function behaviors()
-//    {
-////        return [
-////            'verbs' => [
-////                'class' => VerbFilter::class,
-////                'actions' => [
-////                    'delete' => ['POST'],
-////                ],
-////            ],
-////        ];
-//    }
+    public function behaviors()
+    {
+        return [
+            'auth' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'delete'],
+                        'roles' => ['administrateVoting']
+                    ]
+                ]
+            ],
+//            'verbs' => [
+//                'class' => VerbFilter::class,
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+        ];
+    }
 
     /**
      * Creates a new Answer model.

@@ -4,6 +4,7 @@ namespace simialbi\yii2\voting\controllers;
 
 use simialbi\yii2\voting\models\Invitee;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -20,6 +21,16 @@ class InviteeController extends Controller
     public function behaviors()
     {
         return [
+            'auth' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'delete'],
+                        'roles' => ['administrateVotingInvitations']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [

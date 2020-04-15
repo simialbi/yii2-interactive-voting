@@ -6,10 +6,10 @@ use yii\bootstrap4\Html;
 /* @var $model simialbi\yii2\voting\models\Voting */
 
 $this->title = Yii::t('simialbi/voting/voting', 'Update Voting: {name}', [
-    'name' => $model->id,
+    'name' => $model->subject,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('simialbi/voting/voting', 'Votings'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->subject, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('simialbi/voting', 'Update');
 ?>
 <div class="voting-update">

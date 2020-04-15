@@ -127,6 +127,10 @@ msgid "Description"
 msgstr "Description"
 
 msgctxt "simialbi/voting/model/voting"
+msgid "Does the user can enter his mobile number in login form and get's the code via SMS."
+msgstr "Does the user can enter his mobile number in login form and get's the code via SMS."
+
+msgctxt "simialbi/voting/model/voting"
 msgid "ID"
 msgstr "ID"
 
@@ -139,6 +143,10 @@ msgid "Is finished"
 msgstr "Is finished"
 
 msgctxt "simialbi/voting/model/voting"
+msgid "Is moderated"
+msgstr "Is moderated"
+
+msgctxt "simialbi/voting/model/voting"
 msgid "Subject"
 msgstr "Subject"
 
@@ -149,6 +157,10 @@ msgstr "Updated at"
 msgctxt "simialbi/voting/model/voting"
 msgid "Updated by"
 msgstr "Updated by"
+
+msgctxt "simialbi/voting/model/voting"
+msgid "With mobile registration"
+msgstr "With mobile registration"
 
 msgctxt "simialbi/voting/model/voting-answer"
 msgid "Created at"

@@ -7,6 +7,7 @@ use simialbi\yii2\voting\models\SearchQuestion;
 use simialbi\yii2\voting\models\SearchVoting;
 use simialbi\yii2\voting\models\Voting;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -23,6 +24,26 @@ class VotingController extends Controller
     public function behaviors()
     {
         return [
+            'auth' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'roles' => ['@']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['activate'],
+                        'roles' => ['manageVoting']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete'],
+                        'roles' => ['administrateVoting']
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -88,6 +109,26 @@ class VotingController extends Controller
         }
 
         return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Creates a new Voting model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['voting/view', 'id' => $id]);
+        }
+
+        return $this->render('update', [
             'model' => $model,
         ]);
     }

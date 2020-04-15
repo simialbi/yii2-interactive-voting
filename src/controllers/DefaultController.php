@@ -9,6 +9,7 @@ namespace simialbi\yii2\voting\controllers;
 
 use simialbi\yii2\voting\models\Invitee;
 use simialbi\yii2\voting\models\LoginForm;
+use simialbi\yii2\voting\models\LoginMobileForm;
 use simialbi\yii2\voting\models\Question;
 use simialbi\yii2\voting\models\QuestionAnswer;
 use simialbi\yii2\voting\models\Voting;
@@ -21,7 +22,14 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\UnauthorizedHttpException;
 
+/**
+ * Class DefaultController
+ * @package simialbi\yii2\voting\controllers
+ *
+ * @property-read \simialbi\yii2\voting\Module $module
+ */
 class DefaultController extends Controller
 {
     /**
@@ -39,7 +47,7 @@ class DefaultController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['login'],
+                        'actions' => ['login', 'login-mobile'],
                         'roles' => ['?']
                     ],
                     [
@@ -272,6 +280,57 @@ class DefaultController extends Controller
         }
 
         return $this->render('login', [
+            'model' => $model
+        ]);
+    }
+
+    /**
+     * @return string
+     * @throws UnauthorizedHttpException
+     */
+    public function actionLoginMobile()
+    {
+        $model = new LoginMobileForm();
+        $model->scenario = $model::SCENARIO_STEP_1;
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $identities = ArrayHelper::index(
+                call_user_func([Yii::$app->user->identityClass, 'findIdentities']),
+                $this->module->usernameField
+            );
+            $id = ArrayHelper::getValue($identities, [$model->username, 'id']);
+
+            if (!$id) {
+                throw new UnauthorizedHttpException();
+            }
+            $query = Invitee::find()
+                ->alias('i')
+                ->innerJoinWith(['v' => 'voting'])
+                ->where(['{{i}}.[[user_id]]' => $id])
+                ->where(['{{v}}.[[is_with_mobile_registration]]' => true]);
+            if (!$query->count('{{i}}.[[id]]')) {
+                throw new UnauthorizedHttpException();
+            }
+            $mobile = ArrayHelper::getValue($identities, [$model->username, $this->module->mobileField]);
+            switch ($model->scenario) {
+                case $model::SCENARIO_STEP_1:
+                default:
+                    if (!empty($mobile)) {
+                        $model->scenario = $model::SCENARIO_STEP_2;
+                        break;
+                    } else {
+                        $model->scenario = $model::SCENARIO_STEP_3;
+                    }
+                case $model::SCENARIO_STEP_3:
+
+                    break;
+                case $model::SCENARIO_STEP_2:
+                    $model->scenario = $model::SCENARIO_STEP_3;
+                    break;
+            }
+        }
+
+        return $this->render("login-{$model->scenario}", [
             'model' => $model
         ]);
     }

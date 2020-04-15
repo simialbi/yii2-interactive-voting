@@ -49,6 +49,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'id',
                         'subject',
                         'description:ntext',
+                        'is_active:boolean',
+                        'is_finished:boolean',
+                        'is_moderated:boolean',
+                        'is_with_mobile_registration:boolean',
                         'created_by',
                         'updated_by',
                         'created_at:datetime',
@@ -57,6 +61,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]); ?>
             </div>
             <div class="col-12 col-lg-6 col-xl-8">
+                <?php $toolbar = []; ?>
+                <?php if (Yii::$app->user->can('administrateVoting')): ?>
+                    <?php $toolbar[] = [
+                        'content' => Html::a(FAS::i('plus'), ['question/create', 'votingId' => $model->id], [
+                            'class' => ['btn', 'btn-primary'],
+                            'data' => [
+                                'pjax' => '0'
+                            ]
+                        ])
+                    ]; ?>
+                <?php endif; ?>
                 <?= GridView::widget([
                     'bsVersion' => 4,
                     'dataProvider' => $questionDataProvider,
@@ -112,16 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'panelBeforeTemplate' => '{pager}{summary}',
                     'panelAfterTemplate' => '',
                     'containerOptions' => [],
-                    'toolbar' => [
-                        [
-                            'content' => Html::a(FAS::i('plus'), ['question/create', 'votingId' => $model->id], [
-                                'class' => ['btn', 'btn-primary'],
-                                'data' => [
-                                    'pjax' => '0'
-                                ]
-                            ])
-                        ]
-                    ],
+                    'toolbar' => $toolbar,
                     'columns' => [
                         [
                             'class' => 'kartik\grid\SerialColumn'
@@ -199,7 +205,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'class' => 'kartik\grid\ActionColumn',
                             'controller' => 'question',
-                            'template' => '{view} {activate} {deactivate} {delete}',
+                            'template' => '{activate} {deactivate} {delete}',
                             'buttons' => [
                                 'activate' => function ($url) {
                                     return Html::a(FAS::i('play'), $url, [
@@ -219,12 +225,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             'visibleButtons' => [
                                 'activate' => function ($model) {
                                     /** @var $model \simialbi\yii2\voting\models\Question */
-                                    return !$model->is_active && !$model->is_finished;
+                                    return
+                                        Yii::$app->user->can('manageVoting') &&
+                                        $model->voting->is_moderated &&
+                                        !$model->is_active &&
+                                        !$model->is_finished;
                                 },
                                 'deactivate' => function ($model) {
                                     /** @var $model \simialbi\yii2\voting\models\Question */
-                                    return $model->is_active && !$model->is_finished;
-                                }
+                                    return
+                                        Yii::$app->user->can('manageVoting') &&
+                                        $model->voting->is_moderated &&
+                                        $model->is_active &&
+                                        !$model->is_finished;
+                                },
+                                'delete' => Yii::$app->user->can('administrateVoting')
                             ]
                         ],
 
@@ -235,6 +250,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="row mt-4">
             <div class="col-12">
+                <?php $toolbar = []; ?>
+                <?php if (Yii::$app->user->can('administrateVotingInvitations')): ?>
+                    <?php $toolbar[] = [
+                        'content' => Html::a(FAS::i('plus'), ['invitee/create', 'votingId' => $model->id], [
+                            'class' => ['btn', 'btn-primary'],
+                            'data' => [
+                                'toggle' => 'modal',
+                                'target' => '#dynamicModal'
+                            ]
+                        ])
+                    ]; ?>
+                <?php endif; ?>
                 <?= GridView::widget([
                     'bsVersion' => 4,
                     'dataProvider' => $inviteeDataProvider,
@@ -290,17 +317,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'panelBeforeTemplate' => '{pager}{summary}',
                     'panelAfterTemplate' => '',
                     'containerOptions' => [],
-                    'toolbar' => [
-                        [
-                            'content' => Html::a(FAS::i('plus'), ['invitee/create', 'votingId' => $model->id], [
-                                'class' => ['btn', 'btn-primary'],
-                                'data' => [
-                                    'toggle' => 'modal',
-                                    'target' => '#dynamicModal'
-                                ]
-                            ])
-                        ]
-                    ],
+                    'toolbar' => $toolbar,
                     'columns' => [
                         [
                             'class' => 'kartik\grid\SerialColumn'
@@ -367,7 +384,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'class' => 'kartik\grid\ActionColumn',
                             'controller' => 'invitee',
-                            'template' => '{delete}'
+                            'template' => '{delete}',
+                            'visibleButtons' => [
+                                'delete' => Yii::$app->user->can('administrateVotingInvitations')
+                            ]
                         ]
                     ],
                 ]); ?>

@@ -20,6 +20,26 @@ class Module extends \simialbi\yii2\base\Module implements BootstrapInterface
     public $controllerNamespace = 'simialbi\yii2\voting\controllers';
 
     /**
+     * @var string The base url of the sms provider
+     */
+    public $smsBaseUrl;
+
+    /**
+     * @var string The bearer token for identification against the provider
+     */
+    public $smsAuthToken;
+
+    /**
+     * @var string The field of the user identity class containing the mobile number
+     */
+    public $mobileField = 'mobile';
+
+    /**
+     * @var string The field of the user identity class containing the username
+     */
+    public $usernameField = 'username';
+
+    /**
      * {@inheritDoc}
      * @throws \ReflectionException
      * @throws InvalidConfigException

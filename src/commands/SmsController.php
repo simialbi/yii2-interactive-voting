@@ -15,29 +15,23 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\httpclient\Client;
 
+/**
+ * Provides SMS methods
+ *
+ * @property-read \simialbi\yii2\voting\Module $module
+ */
 class SmsController extends Controller
 {
     /**
-     * @var string
-     */
-    public $baseUrl;
-    /**
-     * @var string
-     */
-    public $token;
-
-    /**
      * Send automatically all sms codes from all invitees to the invitees
-     *
-     * @param string $numberField The field of the user identity class containing the mobile number
      *
      * @return integer Exit code
      * @throws \yii\httpclient\Exception
      */
-    public function actionSendSms($numberField = 'mobile')
+    public function actionSendSms()
     {
         $client = new Client([
-            'baseUrl' => $this->baseUrl,
+            'baseUrl' => $this->module->smsBaseUrl,
             'requestConfig' => [
                 'class' => 'yii\httpclient\Request',
                 'format' => Client::FORMAT_RAW_URLENCODED
@@ -63,8 +57,8 @@ class SmsController extends Controller
         }
         $voting = Voting::findOne($this->select('For which voting would you like to send SMS codes?', $votings));
 
-        if ($this->token) {
-            $headers['Authorization'] = "Bearer {$this->token}";
+        if ($this->module->smsAuthToken) {
+            $headers['Authorization'] = "Bearer {$this->module->smsAuthToken}";
         }
 
         if (!$voting->getInvitees()->count('user_id')) {
@@ -77,7 +71,7 @@ class SmsController extends Controller
 
         $this->stdout("\n");
         foreach ($voting->invitees as $invitee) {
-            $number = ArrayHelper::getValue($invitee->user, $numberField);
+            $number = ArrayHelper::getValue($invitee->user, $this->module->mobileField);
             if (!$number) {
                 $this->stderr('No number for user');
                 $this->stderr($invitee->user->name, Console::FG_PURPLE);
@@ -116,10 +110,5 @@ class SmsController extends Controller
         }
 
         return ExitCode::OK;
-    }
-
-    public function options($actionID)
-    {
-        return ArrayHelper::merge(parent::options($actionID), ['baseUrl', 'token']);
     }
 }

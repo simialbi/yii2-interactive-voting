@@ -151,7 +151,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'template' => '{view} {activate} {delete}',
+                'template' => '{view} {update} {activate} {delete}',
+                'width' => '125px',
                 'buttons' => [
                     'activate' => function ($url) {
                         return Html::a(FAS::i('play'), $url, [
@@ -162,9 +163,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 'visibleButtons' => [
+                    'update' => Yii::$app->user->can('administrateVoting'),
                     'activate' => function ($model) {
                         /** @var $model \simialbi\yii2\voting\models\Voting */
-                        return !$model->is_active && !$model->is_finished;
+                        return Yii::$app->user->can('manageVoting') && $model->is_moderated && !$model->is_active && !$model->is_finished;
                     }
                 ]
             ],
