@@ -11,11 +11,16 @@ use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $lastQuestion simialbi\yii2\voting\models\Question|null */
+/* @var $height integer|null */
+
+if (!isset($height)) {
+    $height = '400px';
+}
 ?>
 
     <h3><?= Html::encode($lastQuestion->subject); ?></h3>
 <?php if (!empty($lastQuestion->description)): ?>
-    <?= Yii::$app->formatter->asNtext($lastQuestion->description); ?>
+    <p><?= Yii::$app->formatter->asNtext($lastQuestion->description); ?></p>
 <?php endif; ?>
 <?php $series = new ColumnSeries([
     'dataFields' => [
@@ -41,7 +46,7 @@ bullet.label.fill = am4core.color('#ffffff');"); ?>
         'id' => 'resultChart',
         'style' => [
             'width' => '100%',
-            'height' => '400px',
+            'height' => $height,
             'max-height' => '100vh'
         ]
     ],

@@ -35,6 +35,10 @@ msgid "The Voting <b>{voting}</b> did not start yet. This page will automaticall
 msgstr "Die Abstimmung <b>{voting}</b> wurde noch nicht gestartet. Diese Seite aktualisiert automatisch sobald die Abstimmung startet."
 
 msgctxt "simialbi/voting"
+msgid "The Voting <b>{voting}</b> is closed. The results can't be seen any more."
+msgstr "Die Abstimmung <b>{voting}</b> ist beendet. Die Resultate können nich länger eingesehen werden."
+
+msgctxt "simialbi/voting"
 msgid "Update"
 msgstr "Bearbeiten"
 
@@ -45,6 +49,10 @@ msgstr "Anonym abstimmen"
 msgctxt "simialbi/voting"
 msgid "Voting did not start yet"
 msgstr "Die Abstimmung wurde noch nicht gestartet"
+
+msgctxt "simialbi/voting"
+msgid "Voting finished"
+msgstr "Abstimmung beendet"
 
 msgctxt "simialbi/voting"
 msgid "You must select one of the options."

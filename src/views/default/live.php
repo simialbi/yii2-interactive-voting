@@ -10,17 +10,30 @@ use yii\helpers\Url;
 $this->title = $voting->subject;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php if ($lastQuestion): ?>
+<?php if ($voting->is_active && !$voting->is_finished && $lastQuestion): ?>
     <?= $this->render('_chart', [
-        'lastQuestion' => $lastQuestion
+        'lastQuestion' => $lastQuestion,
+        'height' => 'calc(100vh - 400px)'
     ]); ?>
+<?php elseif ($voting->is_finished): ?>
+    <div class="jumbotron">
+        <h1 class="display-4"><?= Yii::t('simialbi/voting', 'Voting finished'); ?></h1>
+        <p class="lead">
+            <?= Yii::t(
+                'simialbi/voting',
+                'The Voting <b>{voting}</b> is closed. The results can\'t be seen any more.',
+                ['voting' => $voting->subject]
+            ); ?>
+        </p>
+    </div>
 <?php else: ?>
     <div class="jumbotron">
         <h1 class="display-4"><?= Yii::t('simialbi/voting', 'Voting did not start yet'); ?></h1>
         <p class="lead">
             <?= Yii::t(
                 'simialbi/voting',
-                'The Voting <b>{voting}</b> did not start yet. This page will automatically update as soon as the first question started.'
+                'The Voting <b>{voting}</b> did not start yet. This page will automatically update as soon as the first question started.',
+                ['voting' => $voting->subject]
             ); ?>
         </p>
     </div>
