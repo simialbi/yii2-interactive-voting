@@ -7,6 +7,8 @@
 
 namespace simialbi\yii2\voting\sms;
 
+use Yii;
+use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Client;
 
@@ -35,7 +37,7 @@ use yii\httpclient\Client;
  * ],
  * ```
  */
-class Connection extends \yii\base\Component
+class Connection extends Component
 {
     /**
      * @var string The base url of the sms provider
@@ -43,9 +45,20 @@ class Connection extends \yii\base\Component
     public $baseUrl;
 
     /**
+     * @var string The url path to send messages
+     */
+    public $sendUrl;
+
+    /**
      * @var string The bearer token for identification against the provider
      */
     public $token;
+
+    /**
+     * @var string the class used to create new api [[Message]] objects
+     * @see createMessage
+     */
+    public $messageClass = 'simialbi\yii2\voting\sms\Message';
 
     /**
      * @var Client
@@ -54,6 +67,7 @@ class Connection extends \yii\base\Component
 
     /**
      * {@inheritDoc}
+     * @throws InvalidConfigException
      */
     public function init()
     {
@@ -77,5 +91,49 @@ class Connection extends \yii\base\Component
         }
 
         parent::init();
+    }
+
+    /**
+     * Creates a message for sending
+     * @return Message
+     * @throws InvalidConfigException
+     */
+    public function createMessage()
+    {
+        $config = ['class' => 'simialbi\yii2\voting\sms\Message'];
+        if ($this->messageClass !== $config['class']) {
+            $config['class'] = $this->messageClass;
+        }
+        $config['api'] = $this;
+        /** @var Message $message */
+        $message = Yii::createObject($config);
+        return $message;
+    }
+
+    /**
+     * @param Message $message
+     * @param string $method
+     * @param array $headers
+     * @return Response
+     * @throws InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     * @throws \yii\base\Exception
+     */
+    public function send(Message $message, $method = 'post', $headers = [])
+    {
+        $request = $this->_client
+            ->createRequest()
+            ->setMethod($method)
+            ->setUrl($this->sendUrl)
+            ->setData($message->build())
+            ->addHeaders($headers);
+
+        $response = $request->send();
+
+        $result = new Response();
+        $result->setAttributes($response->data);
+        $result->validate();
+
+        return $result;
     }
 }
