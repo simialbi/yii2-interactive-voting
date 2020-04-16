@@ -287,6 +287,9 @@ class DefaultController extends Controller
     /**
      * @return string
      * @throws UnauthorizedHttpException
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
      */
     public function actionLoginMobile()
     {
@@ -298,34 +301,65 @@ class DefaultController extends Controller
                 call_user_func([Yii::$app->user->identityClass, 'findIdentities']),
                 $this->module->usernameField
             );
-            $id = ArrayHelper::getValue($identities, [$model->username, 'id']);
+            /** @var \simialbi\yii2\models\UserInterface $identity */
+            $identity = ArrayHelper::remove($identities, $model->username);
+            $id = ArrayHelper::getValue($identity, 'id');
 
             if (!$id) {
                 throw new UnauthorizedHttpException();
             }
             $query = Invitee::find()
                 ->alias('i')
-                ->innerJoinWith(['v' => 'voting'])
+                ->innerJoinWith('voting v')
                 ->where(['{{i}}.[[user_id]]' => $id])
-                ->where(['{{v}}.[[is_with_mobile_registration]]' => true]);
-            if (!$query->count('{{i}}.[[id]]')) {
+                ->andWhere(['{{v}}.[[is_with_mobile_registration]]' => true]);
+            if (!$query->count('id')) {
                 throw new UnauthorizedHttpException();
             }
-            $mobile = ArrayHelper::getValue($identities, [$model->username, $this->module->mobileField]);
+            /** @var \simialbi\yii2\voting\models\Invitee $invitee */
+            $invitee = $query->one();
+            $mobile = ArrayHelper::getValue($identity, $this->module->mobileField);
             switch ($model->scenario) {
                 case $model::SCENARIO_STEP_1:
                 default:
-                    if (!empty($mobile)) {
+                    if (empty($mobile)) {
                         $model->scenario = $model::SCENARIO_STEP_2;
                         break;
                     } else {
-                        $model->scenario = $model::SCENARIO_STEP_3;
+                        $model->mobile = $mobile;
                     }
-                case $model::SCENARIO_STEP_3:
-
-                    break;
                 case $model::SCENARIO_STEP_2:
+                    $identity->{$this->module->mobileField} = $model->mobile;
+                    $identity->save();
+                    $invitee->user->refresh();
+
+                    $response = $this->sendLoginCode($invitee);
+
+                    if (!$response->isOk) {
+                        Yii::$app->session->addFlash('danger', Yii::t(
+                            'simialbi/voting/notifications',
+                            'There was an error sending you your code: {error}',
+                            ['error' => $response->statusMessage]
+                        ));
+                        $model->scenario = $model::SCENARIO_STEP_1;
+                    }
+
                     $model->scenario = $model::SCENARIO_STEP_3;
+                    break;
+                case $model::SCENARIO_STEP_3:
+                    $invitee = $query->andWhere(['code' => $model->code])->one();
+                    if (!$invitee) {
+                        Yii::$app->session->addFlash('danger', Yii::t(
+                            'simialbi/voting/notifications',
+                            'The user member combination is not known'
+                        ));
+                        $model = new LoginMobileForm();
+                        $model->scenario = $model::SCENARIO_STEP_1;
+                    }
+
+                    Yii::$app->user->login($identity, 3600 * 5);
+
+                    return $this->redirect(['index']);
                     break;
             }
         }
@@ -365,5 +399,32 @@ class DefaultController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+    }
+
+    /**
+     * Send login code
+     * @param Invitee $invitee
+     * @return \simialbi\yii2\voting\sms\Response
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    protected function sendLoginCode($invitee)
+    {
+        /** @var \simialbi\yii2\voting\sms\Connection $sms */
+        $sms = $this->module->get('sms', true);
+        $voting = $invitee->voting;
+        $message = $sms->createMessage();
+        $message
+            ->id("voting-{$voting->id}-code-{$invitee->user_id}")
+            ->category($message::CATEGORY_INFORMATIONAL)
+            ->content(Yii::t('simialbi/voting', "Your Code for {voting}\n{code}", [
+                'voting' => $voting->subject,
+                'code' => $invitee->code
+            ]))
+            ->test(true)
+            ->type($message::MESSAGE_TYPE_TEXT)
+            ->addRecipient(preg_replace('#[^0-9]#', '', $invitee->user->{$this->module->mobileField}));
+        return $message->send();
     }
 }

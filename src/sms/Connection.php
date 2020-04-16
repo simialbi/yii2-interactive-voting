@@ -84,10 +84,11 @@ class Connection extends Component
             'responseConfig' => [
                 'class' => 'yii\httpclient\Response',
                 'format' => Client::FORMAT_RAW_URLENCODED
-            ]
+            ],
+            'transport' => 'yii\httpclient\CurlTransport'
         ]);
         if ($this->token) {
-            $this->_client->requestConfig['headers']['Authorization'] = $this->token;
+            $this->_client->requestConfig['headers']['Authorization'] = "Bearer {$this->token}";
         }
 
         parent::init();

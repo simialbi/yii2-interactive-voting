@@ -61,9 +61,9 @@ class InviteeController extends Controller
                 $model->save();
 
                 if ($model->errors) {
-                    echo "<pre>";
+                    echo '<pre>';
                     var_dump($model->errors);
-                    exit("</pre>");
+                    exit('</pre>');
                 }
             }
 

@@ -80,7 +80,7 @@ class Message extends Component
      * @var array List of recipients (E164 formatted MSISDNs – see Wikipedia en.wikipedia.org/wiki/MSISDN) to whom the
      * message should be sent. The list of recipients may contains a maximum of 1000 entries.
      */
-    public $recipients;
+    public $recipients = [];
 
     /**
      * @var boolean If the message is sent as flash SMS (displayed directly on the screen of the mobile phone).
@@ -125,7 +125,7 @@ class Message extends Component
         $data = [
             'clientMessageId' => $id,
             'messageContent' => $this->content,
-            'recipientAddressList' => $this->recipients
+            'recipientAddressList' => implode(',', $this->recipients)
         ];
 
         if ($this->category) {
@@ -167,6 +167,7 @@ class Message extends Component
      * @return Response
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\httpclient\Exception
+     * @throws \yii\base\Exception
      */
     public function send()
     {

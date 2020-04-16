@@ -44,6 +44,11 @@ class LoginMobileForm extends Model
             ['username', 'string', 'length' => [4, 10]],
             ['mobile', 'string'],
             ['code', 'string', 'length' => 10],
+            ['scenario', 'safe'],
+
+            ['username', 'filter', 'filter' => function ($value) {
+                return rtrim($value, '_');
+            }],
 
             [['username'], 'required', 'on' => [self::SCENARIO_STEP_1]],
             [['mobile'], 'required', 'on' => [self::SCENARIO_STEP_2]],
