@@ -31,6 +31,10 @@ msgid "Save"
 msgstr "Save"
 
 msgctxt "simialbi/voting"
+msgid "Submit"
+msgstr "Submit"
+
+msgctxt "simialbi/voting"
 msgid "The Voting <b>{voting}</b> did not start yet. This page will automatically update as soon as the first question started."
 msgstr "The Voting <b>{voting}</b> did not start yet. This page will automatically update as soon as the first question started."
 
@@ -103,6 +107,14 @@ msgid "Code"
 msgstr "Code"
 
 msgctxt "simialbi/voting/model/login-form"
+msgid "Member number"
+msgstr "Member number"
+
+msgctxt "simialbi/voting/model/login-form"
+msgid "Mobile"
+msgstr "Mobile"
+
+msgctxt "simialbi/voting/model/login-form"
 msgid "The Code you received by SMS"
 msgstr "The Code you received by SMS"
 
@@ -113,6 +125,14 @@ msgstr "Username"
 msgctxt "simialbi/voting/model/login-form"
 msgid "You're E-Mail"
 msgstr "You're E-Mail"
+
+msgctxt "simialbi/voting/model/login-form"
+msgid "Your member number"
+msgstr "Your member number"
+
+msgctxt "simialbi/voting/model/login-form"
+msgid "Your mobile phone number"
+msgstr "Your mobile phone number"
 
 msgctxt "simialbi/voting/model/voting"
 msgid "Created at"
@@ -293,6 +313,14 @@ msgstr "User"
 msgctxt "simialbi/voting/model/voting-question-answer"
 msgid "User Ip"
 msgstr "User Ip"
+
+msgctxt "simialbi/voting/notifications"
+msgid "The user member combination is not known"
+msgstr "The user member combination is not known"
+
+msgctxt "simialbi/voting/notifications"
+msgid "There was an error sending you your code: {error}"
+msgstr "There was an error sending you your code: {error}"
 
 msgctxt "simialbi/voting/question"
 msgid "Close this question"

@@ -7,7 +7,7 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $voting simialbi\yii2\voting\models\Voting */
 /* @var $question simialbi\yii2\voting\models\Question|null */
-/* @var $lastQuestion simialbi\yii2\voting\models\Question|null */
+/* @var $lastQuestion simialbi\yii2\voting\models\Question[]|null */
 
 $this->title = $voting->subject;
 $this->params['breadcrumbs'][] = $this->title;
@@ -55,10 +55,15 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <?= Html::endForm(); ?>
-    <?php elseif ($lastQuestion): ?>
-        <?= $this->render('_chart', [
-            'lastQuestion' => $lastQuestion
-        ]); ?>
+    <?php elseif (!empty($lastQuestion)): ?>
+        <?php foreach ($lastQuestion as $item): ?>
+            <div class="result-chart my-4">
+                <?= $this->render('_chart', [
+                    'height' => '400px',
+                    'lastQuestion' => $item
+                ]); ?>
+            </div>
+        <?php endforeach; ?>
     <?php endif; ?>
 </div>
 <?php

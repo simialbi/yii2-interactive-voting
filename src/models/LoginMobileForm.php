@@ -74,8 +74,8 @@ class LoginMobileForm extends Model
     public function attributeHints()
     {
         return [
-            'username' => Yii::t('simialbi/voting/model/login-form', 'You\'re member number'),
-            'mobile' => Yii::t('simialbi/voting/model/login-form', 'You\'re mobile phone number'),
+            'username' => Yii::t('simialbi/voting/model/login-form', 'Your member number'),
+            'mobile' => Yii::t('simialbi/voting/model/login-form', 'Your mobile phone number'),
             'code' => Yii::t('simialbi/voting/model/login-form', 'The Code you received by SMS')
         ];
     }

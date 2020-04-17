@@ -96,27 +96,32 @@ class DefaultController extends Controller
             ->from(['qa' => '{{%voting_question_user_answered}}'])
             ->where('{{qa}}.[[question_id]] = {{q}}.[[id]]')
             ->andWhere(['{{qa}}.[[user_id]]' => Yii::$app->user->id]);
-        $question = $query
-            ->where(['{{q}}.[[is_active]]' => true, '{{q}}.[[is_finished]]' => false])
-            ->andWhere(['=', $subQuery, 0]);
-        $lastQuestion = $query2
-            ->leftJoin(
-                ['qa' => '{{%voting_question_user_answered}}'],
-                '{{qa}}.[[question_id]] = {{q}}.[[id]] AND {{qa}}.[[user_id]] = :userId',
-                [':userId' => Yii::$app->user->id]
-            )
-            ->where(['{{q}}.[[is_active]]' => true])
-            ->andWhere([
-                'or',
-                ['{{q}}.[[is_finished]]' => true],
-                ['not', ['{{qa}}.[[question_id]]' => null]]
-            ])
-            ->orderBy(['{{q}}.[[started_at]]' => SORT_DESC]);
+        $question = $query->where(['=', $subQuery, 0]);
+        $lastQuestion = $query2->leftJoin(
+            ['qa' => '{{%voting_question_user_answered}}'],
+            '{{qa}}.[[question_id]] = {{q}}.[[id]] AND {{qa}}.[[user_id]] = :userId',
+            [':userId' => Yii::$app->user->id]
+        );
+        if ($model->is_moderated) {
+            $question->andWhere(['{{q}}.[[is_active]]' => true, '{{q}}.[[is_finished]]' => false]);
+            $lastQuestion
+                ->where(['{{q}}.[[is_active]]' => true])
+                ->andWhere([
+                    'or',
+                    ['{{q}}.[[is_finished]]' => true],
+                    ['not', ['{{qa}}.[[question_id]]' => null]]
+                ])
+                ->orderBy(['{{q}}.[[started_at]]' => SORT_DESC]);
+        } else {
+            $lastQuestion
+                ->where(['not', ['{{qa}}.[[question_id]]' => null]])
+                ->orderBy(['{{q}}.[[id]]' => SORT_ASC]);
+        }
 
         return $this->render('view', [
             'voting' => $model,
             'question' => $question->one(),
-            'lastQuestion' => $lastQuestion->one()
+            'lastQuestion' => $model->is_moderated ? [$lastQuestion->one()] : $lastQuestion->all()
         ]);
     }
 
@@ -330,8 +335,8 @@ class DefaultController extends Controller
                     }
                 case $model::SCENARIO_STEP_2:
                     $identity->{$this->module->mobileField} = $model->mobile;
-                    $identity->save();
-                    $invitee->user->refresh();
+                    call_user_func([$identity, 'save']);
+                    call_user_func([$invitee->user, 'refresh']);
 
                     $response = $this->sendLoginCode($invitee);
 
@@ -360,7 +365,6 @@ class DefaultController extends Controller
                     Yii::$app->user->login($identity, 3600 * 5);
 
                     return $this->redirect(['index']);
-                    break;
             }
         }
 
@@ -422,7 +426,6 @@ class DefaultController extends Controller
                 'voting' => $voting->subject,
                 'code' => $invitee->code
             ]))
-            ->test(true)
             ->type($message::MESSAGE_TYPE_TEXT)
             ->addRecipient(preg_replace('#[^0-9]#', '', $invitee->user->{$this->module->mobileField}));
         return $message->send();

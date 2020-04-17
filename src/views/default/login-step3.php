@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
     <?= $form->field($model, 'scenario')->hiddenInput()->label(false); ?>
+    <?= $form->field($model, 'username')->hiddenInput()->label(false)->hint(false); ?>
 
     <div class="form-row">
         <?= $form->field($model, 'code')->textInput(); ?>

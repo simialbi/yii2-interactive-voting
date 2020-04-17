@@ -32,7 +32,7 @@ if (!isset($height)) {
 <?php $series->appendix = new JsExpression("
 {$series->varName}.columns.template.tooltipText = '{valueY.value}';
 {$series->varName}.columns.template.adapter.add('fill', function(fill, target) {
-    return chartResultChart.colors.getIndex(target.dataItem.index);
+    return chartResultChart{$lastQuestion->id}.colors.getIndex(target.dataItem.index);
 });
 var bullet = {$series->varName}.bullets.push(new am4charts.LabelBullet());
 bullet.interactionsEnabled = false;
@@ -43,7 +43,7 @@ bullet.label.fill = am4core.color('#ffffff');"); ?>
 <?= LineChart::widget([
     'series' => [$series],
     'options' => [
-        'id' => 'resultChart',
+        'id' => 'resultChart' . $lastQuestion->id,
         'style' => [
             'width' => '100%',
             'height' => $height,
