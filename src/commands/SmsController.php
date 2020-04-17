@@ -33,7 +33,7 @@ class SmsController extends Controller
      */
     public function actionSendSms($smsComponent = 'sms')
     {
-        /** @var \simialbi\yii2\voting\sms\Connection $sms */
+        /** @var \simialbi\yii2\websms\Connection $sms */
         $sms = $this->module->get($smsComponent, true);
 
         $votings = Voting::find()->select('subject')->where([

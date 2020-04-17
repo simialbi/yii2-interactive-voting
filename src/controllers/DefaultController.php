@@ -408,14 +408,14 @@ class DefaultController extends Controller
     /**
      * Send login code
      * @param Invitee $invitee
-     * @return \simialbi\yii2\voting\sms\Response
+     * @return \simialbi\yii2\websms\Response
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
     protected function sendLoginCode($invitee)
     {
-        /** @var \simialbi\yii2\voting\sms\Connection $sms */
+        /** @var \simialbi\yii2\websms\Connection $sms */
         $sms = $this->module->get('sms', true);
         $voting = $invitee->voting;
         $message = $sms->createMessage();
