@@ -167,6 +167,14 @@ msgid "Is moderated"
 msgstr "Is moderated"
 
 msgctxt "simialbi/voting/model/voting"
+msgid "Message after voting ended"
+msgstr "Message after voting ended"
+
+msgctxt "simialbi/voting/model/voting"
+msgid "Show results"
+msgstr "Show results"
+
+msgctxt "simialbi/voting/model/voting"
 msgid "Subject"
 msgstr "Subject"
 

@@ -5,6 +5,7 @@ namespace simialbi\yii2\voting\models;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%voting_invitee}}".
@@ -22,7 +23,7 @@ use yii\behaviors\TimestampBehavior;
  * @property-read \simialbi\yii2\models\UserInterface $creator
  * @property-read \simialbi\yii2\models\UserInterface $updater
  */
-class Invitee extends \yii\db\ActiveRecord
+class Invitee extends ActiveRecord
 {
     /**
      * {@inheritDoc}

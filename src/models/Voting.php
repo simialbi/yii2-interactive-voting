@@ -5,6 +5,8 @@ namespace simialbi\yii2\voting\models;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%voting}}".
@@ -16,6 +18,8 @@ use yii\behaviors\TimestampBehavior;
  * @property boolean $is_finished Is the voting finished?
  * @property boolean $is_moderated Is the voting moderated?
  * @property boolean $is_with_mobile_registration Does the user can enter his mobile number in login form and get's the code via SMS
+ * @property boolean $show_results
+ * @property string $finished_message
  * @property string|integer $created_by
  * @property string|integer $updated_by
  * @property string|integer $created_at
@@ -26,7 +30,7 @@ use yii\behaviors\TimestampBehavior;
  * @property-read \simialbi\yii2\models\UserInterface $creator
  * @property-read \simialbi\yii2\models\UserInterface $updater
  */
-class Voting extends \yii\db\ActiveRecord
+class Voting extends ActiveRecord
 {
     /**
      * {@inheritDoc}
@@ -48,8 +52,19 @@ class Voting extends \yii\db\ActiveRecord
 
             [['is_moderated'], 'default', 'value' => true],
             [['is_active', 'is_finished', 'is_with_mobile_registration'], 'default', 'value' => false],
+            ['show_results', 'default', 'value' => true, 'when' => function ($model) {
+                /** @var static $model */
+                return !$model->is_moderated;
+            }],
 
             [['subject', 'is_active', 'is_finished', 'is_moderated', 'is_with_mobile_registration'], 'required'],
+            ['finished_message', 'required', 'when' => function ($model) {
+                /** @var static $model */
+                return $model->show_results;
+            }, 'whenClient' => 'function (attribute, value) {
+                var $el = jQuery(\'#' . Html::getInputId($this, 'show_results') . '\');
+                return $el.length && $el.is(\':checked\');
+            }'],
         ];
     }
 
@@ -89,6 +104,8 @@ class Voting extends \yii\db\ActiveRecord
             'is_finished' => Yii::t('simialbi/voting/model/voting', 'Is finished'),
             'is_moderated' => Yii::t('simialbi/voting/model/voting', 'Is moderated'),
             'is_with_mobile_registration' => Yii::t('simialbi/voting/model/voting', 'With mobile registration'),
+            'show_results' => Yii::t('simialbi/voting/model/voting', 'Show results'),
+            'finished_message' => Yii::t('simialbi/voting/model/voting', 'Message after voting ended'),
             'created_by' => Yii::t('simialbi/voting/model/voting', 'Created by'),
             'updated_by' => Yii::t('simialbi/voting/model/voting', 'Updated by'),
             'created_at' => Yii::t('simialbi/voting/model/voting', 'Created at'),

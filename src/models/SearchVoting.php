@@ -4,7 +4,6 @@ namespace simialbi\yii2\voting\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use simialbi\yii2\voting\models\Voting;
 
 /**
  * SearchVoting represents the model behind the search form of `simialbi\yii2\voting\models\Voting`.
@@ -18,8 +17,8 @@ class SearchVoting extends Voting
     {
         return [
             [['id', 'created_at', 'updated_at'], 'integer'],
-            [['is_active', 'is_finished'], 'boolean'],
-            [['subject', 'description', 'created_by', 'updated_by'], 'safe'],
+            [['is_active', 'is_finished', 'is_moderated', 'is_with_mobile_registration', 'show_results'], 'boolean'],
+            [['subject', 'description', 'created_by', 'updated_by', 'finished_message'], 'safe'],
         ];
     }
 
@@ -62,6 +61,9 @@ class SearchVoting extends Voting
             'id' => $this->id,
             'is_active' => $this->is_active,
             'is_finished' => $this->is_finished,
+            'is_moderated' => $this->is_moderated,
+            'is_with_mobile_registration' => $this->is_with_mobile_registration,
+            'show_results' => $this->show_results,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
@@ -69,7 +71,8 @@ class SearchVoting extends Voting
         ]);
 
         $query->andFilterWhere(['like', 'subject', $this->subject])
-            ->andFilterWhere(['like', 'description', $this->description]);
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'finished_message', $this->finished_message]);
 
         return $dataProvider;
     }
