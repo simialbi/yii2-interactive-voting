@@ -53,6 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'is_finished:boolean',
                         'is_moderated:boolean',
                         'is_with_mobile_registration:boolean',
+                        'show_results:boolean',
+                        'finished_message:raw',
                         'created_by',
                         'updated_by',
                         'created_at:datetime',

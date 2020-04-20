@@ -56,14 +56,20 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?= Html::endForm(); ?>
     <?php elseif (!empty($lastQuestion)): ?>
-        <?php foreach ($lastQuestion as $item): ?>
-            <div class="result-chart my-4">
-                <?= $this->render('_chart', [
-                    'height' => '400px',
-                    'lastQuestion' => $item
-                ]); ?>
+        <?php if (!$voting->is_moderated && !$voting->show_results): ?>
+            <div class="jumbotron">
+                <?= $voting->finished_message; ?>
             </div>
-        <?php endforeach; ?>
+        <?php else: ?>
+            <?php foreach ($lastQuestion as $item): ?>
+                <div class="result-chart my-4">
+                    <?= $this->render('_chart', [
+                        'height' => '400px',
+                        'lastQuestion' => $item
+                    ]); ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
 <?php

@@ -33,17 +33,22 @@ use yii\bootstrap4\Html;
         'labelOptions' => [
             'class' => 'custom-control-label'
         ]
-    ])->checkbox(['disabled' => $model->is_moderated]); ?>
+    ])->checkbox(['disabled' => (bool)$model->is_moderated]); ?>
 
     <?= $form->field($model, 'finished_message')->widget(Quill::class, [
+        'id' => 'quill',
         'localAssets' => true,
         'options' => [
-            'disabled' => $model->show_results,
             'style' => [
                 'height' => 'auto'
             ]
         ],
+        'readOnly' => $model->show_results,
         'toolbarOptions' => [
+            [
+                ['header' => 1],
+                ['header' => 2],
+            ],
             ['bold', 'italic', 'underline', 'strike'],
             [
                 ['script' => 'sub'],
@@ -64,25 +69,28 @@ use yii\bootstrap4\Html;
 
 </div>
 <?php
+$quillId = 'q_quill';
 $isModeratedId = Html::getInputId($model, 'is_moderated');
 $showResultsId = Html::getInputId($model, 'show_results');
 $finishedMessageId = Html::getInputId($model, 'finished_message');
 $js = <<<JS
 jQuery('#$isModeratedId').on('change.yii', function () {
-    if (jQuery(this).is(':checked')) {
-        jQuery('#$showResultsId').prop('disabled', false).trigger('change.yii');
+    if (!jQuery(this).is(':checked')) {
+        jQuery('#$showResultsId').prop('disabled', false).prop('checked', true).trigger('change.yii');
     } else {
-        jQuery('#$showResultsId').prop('disabled', true);
+        jQuery('#$showResultsId').prop('disabled', true).trigger('change.yii');
         jQuery('#{$form->id}').yiiActiveForm('updateAttribute', '$showResultsId', null);
     }
 });
 jQuery('#$showResultsId').on('change.yii', function () {
+    q_quill.enable(!jQuery(this).is(':checked'));
     if (jQuery(this).is(':checked')) {
-        jQuery('#$finishedMessageId').prop('disabled', false);
-    } else {
-        jQuery('#$finishedMessageId').prop('disabled', true);
         jQuery('#{$form->id}').yiiActiveForm('updateAttribute', '$finishedMessageId', null);
+    } else {
+        q_quill.focus();
     }
 });
 JS;
+
+$this->registerJs($js);
 

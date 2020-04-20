@@ -60,10 +60,10 @@ class Voting extends ActiveRecord
             [['subject', 'is_active', 'is_finished', 'is_moderated', 'is_with_mobile_registration'], 'required'],
             ['finished_message', 'required', 'when' => function ($model) {
                 /** @var static $model */
-                return $model->show_results;
+                return !$model->show_results;
             }, 'whenClient' => 'function (attribute, value) {
                 var $el = jQuery(\'#' . Html::getInputId($this, 'show_results') . '\');
-                return $el.length && $el.is(\':checked\');
+                return $el.length && !$el.is(\':checked\');
             }'],
         ];
     }
