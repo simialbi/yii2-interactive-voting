@@ -113,6 +113,7 @@ class DefaultController extends Controller
                 ])
                 ->orderBy(['{{q}}.[[started_at]]' => SORT_DESC]);
         } else {
+            $question->orderBy(['{{q}}.[[created_at]]' => SORT_ASC]);
             $lastQuestion
                 ->where(['not', ['{{qa}}.[[question_id]]' => null]])
                 ->orderBy(['{{q}}.[[id]]' => SORT_ASC]);
