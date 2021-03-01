@@ -45,6 +45,7 @@ class Module extends \simialbi\yii2\base\Module implements BootstrapInterface
         if (!Yii::$app->hasModule('gridview')) {
             $this->setModule('gridview', [
                 'class' => 'kartik\grid\Module',
+                'bsVersion' => '4',
                 'exportEncryptSalt' => 'ror_HTbRh0Ad7K7DqhAtZOp50GKyia4c',
                 'i18n' => [
                     'class' => 'yii\i18n\PhpMessageSource',
