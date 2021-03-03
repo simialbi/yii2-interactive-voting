@@ -63,7 +63,7 @@ class SmsController extends Controller
         foreach ($voting->invitees as $invitee) {
             $number = ArrayHelper::getValue($invitee->user, $this->module->mobileField);
             if (!$number) {
-                $this->stderr('No number for user');
+                $this->stderr('No number for user ');
                 $this->stderr($invitee->user->name, Console::FG_PURPLE);
                 $this->stderr(' ... skipping', Console::FG_YELLOW);
                 $this->stderr("\n");
