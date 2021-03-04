@@ -2,6 +2,7 @@
 
 namespace simialbi\yii2\voting\models;
 
+use simialbi\yii2\voting\helpers\StringHelper;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -101,7 +102,7 @@ class Invitee extends ActiveRecord
     public function beforeSave($insert)
     {
         if ($insert && !$this->code) {
-            $this->code = Yii::$app->security->generateRandomString(10);
+            $this->code = StringHelper::generateRandomString(10, '23456789abcdefghjkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ');
         }
 
         return parent::beforeSave($insert);
