@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $description Details to the question
  * @property boolean $is_active Current question to be answered
  * @property boolean $is_finished Is the question finished?
+ * @property boolean $multiple_answers_allowed Allow multiple answers?
  * @property string|integer $created_by
  * @property string|integer $updated_by
  * @property string|integer $created_at
@@ -65,9 +66,9 @@ class Question extends ActiveRecord
                 'targetClass' => Voting::class,
                 'targetAttribute' => ['voting_id' => 'id']
             ],
-            [['is_active', 'is_finished'], 'boolean'],
+            [['is_active', 'is_finished', 'multiple_answers_allowed'], 'boolean'],
 
-            [['is_active', 'is_finished'], 'default', 'value' => false],
+            [['is_active', 'is_finished', 'multiple_answers_allowed'], 'default', 'value' => false],
 
             [['voting_id', 'subject', 'is_active', 'is_finished'], 'required']
         ];
@@ -110,6 +111,7 @@ class Question extends ActiveRecord
             'description' => Yii::t('simialbi/voting/model/voting-question', 'Description'),
             'is_active' => Yii::t('simialbi/voting/model/voting-question', 'Is active'),
             'is_finished' => Yii::t('simialbi/voting/model/voting-question', 'Is finished'),
+            'multiple_answers_allowed' => Yii::t('simialbi/voting/model/voting-question', 'Allow multiple answers?'),
             'created_by' => Yii::t('simialbi/voting/model/voting-question', 'Created by'),
             'updated_by' => Yii::t('simialbi/voting/model/voting-question', 'Updated by'),
             'created_at' => Yii::t('simialbi/voting/model/voting-question', 'Created at'),

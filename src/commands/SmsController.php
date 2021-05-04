@@ -13,6 +13,7 @@ use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
+use yii\helpers\Url;
 
 /**
  * Provides SMS methods
@@ -21,17 +22,23 @@ use yii\helpers\Console;
  */
 class SmsController extends Controller
 {
+    const MODE_CODE = 'code';
+    const MODE_AUTOLOGIN = 'autologin';
+
     /**
      * Send automatically all sms codes from all invitees to the invitees
      *
      * @param string $smsComponent
+     * @param string $mode The login mode. Either 'code' to send all users a code or 'autologin' to generate a link.
+     * If 'autologin' is used, be sure to have a url manager configured in the console config and the
+     * parameter "hostInfo" set.
      *
      * @return integer Exit code
      *
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
-    public function actionSendSms($smsComponent = 'sms')
+    public function actionSendSms($smsComponent = 'sms', $mode = self::MODE_CODE)
     {
         /** @var \simialbi\yii2\websms\Connection $sms */
         $sms = $this->module->get($smsComponent, true);
@@ -73,12 +80,23 @@ class SmsController extends Controller
             $message
                 ->id("voting-{$voting->id}-code-{$invitee->user_id}")
                 ->category($message::CATEGORY_INFORMATIONAL)
-                ->content(Yii::t('simialbi/voting', "Your Code for {voting}\n{code}", [
-                    'voting' => $voting->subject,
-                    'code' => $invitee->code
-                ]))
                 ->type($message::MESSAGE_TYPE_TEXT)
                 ->addRecipient(preg_replace('#[^0-9]#', '', $number));
+            if ($mode === self::MODE_AUTOLOGIN) {
+                $message->content(Yii::t(
+                    'simialbi/voting',
+                    "You were invited to the voting {voting}\nClick the following link to vote\n{link}",
+                    [
+                        'voting' => $voting->subject,
+                        'link' => Url::to([$this->module->id . '/default/login-token', 'token' => $invitee->user->getAuthKey()])
+                    ]
+                ));
+            } else {
+                $message->content(Yii::t('simialbi/voting', "Your Code for {voting}\n{code}", [
+                    'voting' => $voting->subject,
+                    'code' => $invitee->code
+                ]));
+            }
 
             $this->stdout("Sending code `{$invitee->code}` to: ");
             $this->stdout($number, Console::FG_PURPLE);

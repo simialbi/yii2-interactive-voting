@@ -43,7 +43,7 @@ class LoginMobileForm extends Model
         return [
             ['username', 'string', 'length' => [4, 10]],
             ['mobile', 'string'],
-            ['code', 'string', 'length' => 10],
+            ['code', 'string', 'length' => [8, 10]],
             ['scenario', 'safe'],
 
             ['username', 'filter', 'filter' => function ($value) {

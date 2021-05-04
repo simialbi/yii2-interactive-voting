@@ -30,7 +30,7 @@ if (!isset($height)) {
     'name' => Yii::t('simialbi/voting/answer', 'Answers')
 ]); ?>
 <?php $series->appendix = new JsExpression("
-{$series->varName}.columns.template.tooltipText = '{valueY.value}';
+{$series->varName}.columns.template.tooltipText = '{categoryX}';
 {$series->varName}.columns.template.adapter.add('fill', function(fill, target) {
     return chartResultChart{$lastQuestion->id}.colors.getIndex(target.dataItem.index);
 });
@@ -40,6 +40,7 @@ bullet.dy = 50;
 bullet.label.text = '{valueY}';
 bullet.label.fontSize = '40px';
 bullet.label.fill = am4core.color('#ffffff');"); ?>
+<?php $categoryAxis = new CategoryAxis(['dataFields' => ['category' => 'answer']]); ?>
 <?= LineChart::widget([
     'series' => [$series],
     'options' => [
@@ -51,11 +52,7 @@ bullet.label.fill = am4core.color('#ffffff');"); ?>
         ]
     ],
     'axes' => [
-        new CategoryAxis([
-            'dataFields' => [
-                'category' => 'answer'
-            ]
-        ]),
+        $categoryAxis,
         new ValueAxis()
     ],
     'dataSource' => [
@@ -69,3 +66,8 @@ bullet.label.fill = am4core.color('#ffffff');"); ?>
         'reloadFrequency' => 5000
     ]
 ]); ?>
+<?php
+$this->registerJs("{$categoryAxis->varName}.renderer.labels.template.fontSize = 14;");
+$this->registerJs("{$categoryAxis->varName}.renderer.labels.template.wrap = true;");
+$this->registerJs("{$categoryAxis->varName}.renderer.labels.template.maxWidth = 220;");
+?>

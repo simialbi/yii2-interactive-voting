@@ -16,6 +16,12 @@ use yii\bootstrap4\Html;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
+    <?= $form->field($model, 'multiple_answers_allowed', [
+        'labelOptions' => [
+            'class' => 'custom-control-label'
+        ]
+    ])->checkbox() ?>
+
     <div class="form-group">
         <?= Html::submitButton(Yii::t('simialbi/voting', 'Save'), ['class' => ['btn', 'btn-success']]) ?>
 

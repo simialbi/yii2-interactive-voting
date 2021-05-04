@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php endif; ?>
 <?php
 $url = Url::to(['status', 'votingId' => $voting->id, 'referrer' => 'live'], true);
+$id = $lastQuestion ? $lastQuestion->id : 'null';
 $js = <<<JS
 window.setInterval(function () {
     jQuery.ajax({
@@ -48,7 +49,7 @@ window.setInterval(function () {
     }).done(function (returnData) {
         switch (returnData.action) {
             case 'redirect':
-                if (returnData.newQuestion && returnData.newQuestion.id === {$lastQuestion->id}) {
+                if (returnData.newQuestion && returnData.newQuestion.id === {$id}) {
                     return;
                 }
                 window.location.replace(returnData.target);

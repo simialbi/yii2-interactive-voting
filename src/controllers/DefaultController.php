@@ -47,7 +47,7 @@ class DefaultController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['login', 'login-mobile'],
+                        'actions' => ['login', 'login-mobile', 'login-token'],
                         'roles' => ['?']
                     ],
                     [
@@ -161,16 +161,24 @@ class DefaultController extends Controller
     {
         $question = $this->findQuestionModel($questionId);
 
-        if (Yii::$app->request->post() && null !== ($answer = Yii::$app->request->getBodyParam('answer'))) {
+        if (Yii::$app->request->post() && null !== ($answers = Yii::$app->request->getBodyParam('answer'))) {
+            if (!is_array($answers)) {
+                $answers = [$answers];
+            }
+            if (!$question->multiple_answers_allowed) {
+                $answers = [$answers[0]];
+            }
             $anonymous = Yii::$app->request->getBodyParam('anonymous', false);
-            $questionAnswer = new QuestionAnswer([
-                'user_id' => $anonymous ? null : (string)Yii::$app->user->id,
-                'user_ip' => Yii::$app->request->userIP,
-                'session_id' => Yii::$app->session->id,
-                'question_id' => $questionId,
-                'answer_id' => $answer
-            ]);
-            $questionAnswer->save();
+            foreach ($answers as $answer) {
+                $questionAnswer = new QuestionAnswer([
+                    'user_id' => $anonymous ? null : (string)Yii::$app->user->id,
+                    'user_ip' => Yii::$app->request->userIP,
+                    'session_id' => Yii::$app->session->id,
+                    'question_id' => $questionId,
+                    'answer_id' => $answer
+                ]);
+                $questionAnswer->save();
+            }
             Yii::$app->db->createCommand()->insert('{{%voting_question_user_answered}}', [
                 'question_id' => $questionId,
                 'user_id' => Yii::$app->user->id
@@ -312,13 +320,20 @@ class DefaultController extends Controller
             $id = ArrayHelper::getValue($identity, 'id');
 
             if (!$id) {
-                throw new UnauthorizedHttpException();
+                $identity = ArrayHelper::remove($identities, '0' . $model->username);
+                $id = ArrayHelper::getValue($identity, 'id');
+
+                if (!$id) {
+                    throw new UnauthorizedHttpException();
+                }
             }
             $query = Invitee::find()
                 ->alias('i')
                 ->innerJoinWith('voting v')
                 ->where(['{{i}}.[[user_id]]' => $id])
-                ->andWhere(['{{v}}.[[is_with_mobile_registration]]' => true]);
+                ->andWhere(['{{v}}.[[is_with_mobile_registration]]' => true])
+                ->andWhere(['{{v}}.[[is_active]]' => true])
+                ->andWhere(['{{v}}.[[is_finished]]' => false]);
             if (!$query->count('id')) {
                 throw new UnauthorizedHttpException();
             }
@@ -372,6 +387,20 @@ class DefaultController extends Controller
         return $this->render("login-{$model->scenario}", [
             'model' => $model
         ]);
+    }
+
+    /**
+     * Log in a user by identity token
+     * @param string $token
+     * @throws UnauthorizedHttpException
+     */
+    public function actionLoginToken($token)
+    {
+        if (!Yii::$app->user->loginByAccessToken($token)) {
+            throw new UnauthorizedHttpException();
+        }
+
+        return $this->redirect(['index']);
     }
 
     /**

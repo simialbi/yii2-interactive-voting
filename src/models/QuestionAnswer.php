@@ -53,7 +53,7 @@ class QuestionAnswer extends ActiveRecord
                 'targetClass' => Answer::class,
                 'targetAttribute' => ['answer_id' => 'id']
             ],
-            [['question_id'], 'unique', 'targetAttribute' => ['question_id', 'user_id', 'session_id']],
+//            [['question_id'], 'unique', 'targetAttribute' => ['question_id', 'user_id', 'session_id']],
             ['user_ip', 'ip'],
 
             [['question_id', 'answer_id', 'user_ip', 'session_id'], 'required']
