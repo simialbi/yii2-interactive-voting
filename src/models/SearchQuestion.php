@@ -13,7 +13,7 @@ class SearchQuestion extends Question
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'voting_id', 'created_at', 'updated_at'], 'integer'],
@@ -25,7 +25,7 @@ class SearchQuestion extends Question
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -39,7 +39,7 @@ class SearchQuestion extends Question
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $votingId = null)
+    public function search(array $params, ?int $votingId = null): ActiveDataProvider
     {
         $query = Question::find();
 

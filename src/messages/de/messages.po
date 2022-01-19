@@ -63,12 +63,12 @@ msgid "You must select one of the options."
 msgstr "Sie müssen eine der Optionen auswählen"
 
 msgctxt "simialbi/voting"
-msgid "Your Code for {voting}\n{code}"
-msgstr "Ihr Code für {voting}\n{code}"
-
-msgctxt "simialbi/voting"
 msgid "You were invited to the voting {voting}\nClick the following link to vote\n{link}"
 msgstr "Sie wurden eingeladen bei der Abstimmung {voting} teilzunehmen\nKlicken Sie auf den untenstehenden Link um teilzunehmen\n{link}"
+
+msgctxt "simialbi/voting"
+msgid "Your Code for {voting}\n{code}"
+msgstr "Ihr Code für {voting}\n{code}"
 
 msgctxt "simialbi/voting/answer"
 msgid "Answers"
@@ -251,6 +251,10 @@ msgid "Voting"
 msgstr "Abstimmung"
 
 msgctxt "simialbi/voting/model/voting-question"
+msgid "Allow multiple answers?"
+msgstr "Mehrere Antworten möglich?"
+
+msgctxt "simialbi/voting/model/voting-question"
 msgid "Created at"
 msgstr "Erstellt am"
 
@@ -277,10 +281,6 @@ msgstr "Aktiv"
 msgctxt "simialbi/voting/model/voting-question"
 msgid "Is finished"
 msgstr "Beendet"
-
-msgctxt "simialbi/voting/model/voting-question"
-msgid "Allow multiple answers?"
-msgstr "Mehrere Antworten möglich?"
 
 msgctxt "simialbi/voting/model/voting-question"
 msgid "Started at"
@@ -335,8 +335,8 @@ msgid "The user member combination is not known"
 msgstr "Diese Kombination von Mitglieder-Nr. und Code existiert nicht"
 
 msgctxt "simialbi/voting/notifications"
-msgid "There was an error sending you your code: {error}"
-msgstr "Es gab einen Fehler beim Senden des Codes: {error}"
+msgid "There was an error sending you your code"
+msgstr "Es gab einen Fehler beim Senden des Codes"
 
 msgctxt "simialbi/voting/question"
 msgid "Close this question"

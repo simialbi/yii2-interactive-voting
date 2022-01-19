@@ -28,7 +28,7 @@ class LoginForm extends Model
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             ['username', 'email'],
@@ -41,7 +41,7 @@ class LoginForm extends Model
     /**
      * {@inheritDoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'username' => Yii::t('simialbi/voting/model/login-form', 'Username'),
@@ -52,7 +52,7 @@ class LoginForm extends Model
     /**
      * {@inheritDoc}
      */
-    public function attributeHints()
+    public function attributeHints(): array
     {
         return [
             'username' => Yii::t('simialbi/voting/model/login-form', 'You\'re E-Mail'),

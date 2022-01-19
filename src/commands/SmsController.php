@@ -38,9 +38,9 @@ class SmsController extends Controller
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
-    public function actionSendSms($smsComponent = 'sms', $mode = self::MODE_CODE)
+    public function actionSendSms(string $smsComponent = 'sms', string $mode = self::MODE_CODE): int
     {
-        /** @var \simialbi\yii2\websms\Connection $sms */
+        /** @var \simialbi\yii2\sms\ProviderInterface $sms */
         $sms = $this->module->get($smsComponent, true);
 
         $votings = Voting::find()->select('subject')->where([
@@ -76,14 +76,10 @@ class SmsController extends Controller
                 $this->stderr("\n");
                 continue;
             }
-            $message = $sms->createMessage();
-            $message
-                ->id("voting-{$voting->id}-code-{$invitee->user_id}")
-                ->category($message::CATEGORY_INFORMATIONAL)
-                ->type($message::MESSAGE_TYPE_TEXT)
-                ->addRecipient(preg_replace('#[^0-9]#', '', $number));
+            $message = $sms->compose();
+            $message->setTo($number);
             if ($mode === self::MODE_AUTOLOGIN) {
-                $message->content(Yii::t(
+                $message->setBody(Yii::t(
                     'simialbi/voting',
                     "You were invited to the voting {voting}\nClick the following link to vote\n{link}",
                     [
@@ -92,7 +88,7 @@ class SmsController extends Controller
                     ]
                 ));
             } else {
-                $message->content(Yii::t('simialbi/voting', "Your Code for {voting}\n{code}", [
+                $message->setBody(Yii::t('simialbi/voting', "Your Code for {voting}\n{code}", [
                     'voting' => $voting->subject,
                     'code' => $invitee->code
                 ]));
@@ -103,7 +99,7 @@ class SmsController extends Controller
 
             $response = $message->send();
 
-            if ($response->isOk) {
+            if ($response) {
                 $this->stdout(' ... success', Console::FG_GREEN);
             } else {
                 $this->stderr(' ... failed', Console::FG_RED);

@@ -14,7 +14,7 @@ class SearchAnswer extends Answer
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'question_id', 'created_at', 'updated_at'], 'integer'],
@@ -25,7 +25,7 @@ class SearchAnswer extends Answer
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -39,7 +39,7 @@ class SearchAnswer extends Answer
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $questionId = null)
+    public function search(array $params, ?int $questionId = null): ActiveDataProvider
     {
         $query = Answer::find();
 

@@ -25,7 +25,7 @@ class QuestionAnswer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%voting_question_answer}}';
     }
@@ -33,7 +33,7 @@ class QuestionAnswer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['question_id', 'answer_id'], 'integer'],
@@ -63,7 +63,7 @@ class QuestionAnswer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'timestamp' => [
@@ -78,7 +78,7 @@ class QuestionAnswer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('simialbi/voting/model/voting-question-answer', 'ID'),
@@ -95,7 +95,7 @@ class QuestionAnswer extends ActiveRecord
      * {@inheritDoc}
      * @throws \yii\base\NotSupportedException
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         if ($this->user_ip && !is_numeric($this->user_ip)) {
             $this->user_ip = ip2long($this->user_ip);
@@ -109,7 +109,7 @@ class QuestionAnswer extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getQuestion()
+    public function getQuestion(): \yii\db\ActiveQuery
     {
         return $this->hasOne(Question::class, ['id' => 'question_id']);
     }
@@ -119,7 +119,7 @@ class QuestionAnswer extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAnswer()
+    public function getAnswer(): \yii\db\ActiveQuery
     {
         return $this->hasOne(Answer::class, ['id' => 'answer_id']);
     }

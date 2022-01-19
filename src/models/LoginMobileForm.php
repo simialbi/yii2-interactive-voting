@@ -38,7 +38,7 @@ class LoginMobileForm extends Model
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             ['username', 'string', 'length' => [4, 10]],
@@ -59,7 +59,7 @@ class LoginMobileForm extends Model
     /**
      * {@inheritDoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'username' => Yii::t('simialbi/voting/model/login-form', 'Member number'),
@@ -71,7 +71,7 @@ class LoginMobileForm extends Model
     /**
      * {@inheritDoc}
      */
-    public function attributeHints()
+    public function attributeHints(): array
     {
         return [
             'username' => Yii::t('simialbi/voting/model/login-form', 'Your member number'),

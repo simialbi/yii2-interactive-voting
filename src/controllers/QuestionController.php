@@ -21,7 +21,7 @@ class QuestionController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'auth' => [
@@ -83,7 +83,7 @@ class QuestionController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id = null)
+    public function actionView(?int $id = null): string
     {
         if (null === $id && Yii::$app->request->isPost) {
             $id = Yii::$app->request->getBodyParam('expandRowKey');
@@ -108,9 +108,9 @@ class QuestionController extends Controller
      *
      * @param integer $votingId The votings id
      *
-     * @return mixed
+     * @return string
      */
-    public function actionCreate($votingId)
+    public function actionCreate(int $votingId): string
     {
         $model = new Question([
             'voting_id' => $votingId
@@ -144,7 +144,7 @@ class QuestionController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
 
@@ -161,12 +161,12 @@ class QuestionController extends Controller
      * Deletes an existing Question model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
-     * @return mixed
+     * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id): \yii\web\Response
     {
         $model = $this->findModel($id);
         $model->delete();
@@ -181,7 +181,7 @@ class QuestionController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException
      */
-    public function actionActivate($id)
+    public function actionActivate(int $id): \yii\web\Response
     {
         $model = $this->findModel($id);
 
@@ -214,7 +214,7 @@ class QuestionController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException
      */
-    public function actionDeactivate($id)
+    public function actionDeactivate(int $id): \yii\web\Response
     {
         $model = $this->findModel($id);
 
@@ -227,11 +227,11 @@ class QuestionController extends Controller
     /**
      * Finds the Question model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param mixed $id
      * @return Question the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id): Question
     {
         if (($model = Question::findOne($id)) !== null) {
             return $model;

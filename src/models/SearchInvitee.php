@@ -14,7 +14,7 @@ class SearchInvitee extends Invitee
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['voting_id', 'created_at', 'updated_at'], 'integer'],
@@ -25,7 +25,7 @@ class SearchInvitee extends Invitee
     /**
      * {@inheritDoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -39,7 +39,7 @@ class SearchInvitee extends Invitee
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $votingId = null)
+    public function search(array $params, ?int $votingId = null): ActiveDataProvider
     {
         $query = Invitee::find();
 

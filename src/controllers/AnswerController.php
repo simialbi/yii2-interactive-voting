@@ -16,7 +16,7 @@ class AnswerController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'auth' => [
@@ -44,9 +44,9 @@ class AnswerController extends Controller
      *
      * @param integer $questionId The questions primary key
      *
-     * @return mixed
+     * @return string
      */
-    public function actionCreate($questionId)
+    public function actionCreate(int $questionId): string
     {
         $model = new Answer([
             'question_id' => $questionId
@@ -67,12 +67,12 @@ class AnswerController extends Controller
      * Deletes an existing Answer model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
-     * @return mixed
+     * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
         $model = $this->findModel($id);
         $model->delete();
@@ -93,11 +93,11 @@ class AnswerController extends Controller
     /**
      * Finds the Answer model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param mixed $id
      * @return Answer the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id): Answer
     {
         if (($model = Answer::findOne($id)) !== null) {
             return $model;

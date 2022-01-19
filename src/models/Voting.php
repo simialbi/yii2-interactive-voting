@@ -35,7 +35,7 @@ class Voting extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%voting}}';
     }
@@ -43,7 +43,7 @@ class Voting extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['description'], 'string'],
@@ -71,7 +71,7 @@ class Voting extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'blameable' => [
@@ -94,7 +94,7 @@ class Voting extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('simialbi/voting/model/voting', 'ID'),
@@ -116,7 +116,7 @@ class Voting extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function attributeHints()
+    public function attributeHints(): array
     {
         return [
             'is_with_mobile_registration' => Yii::t(
@@ -131,7 +131,7 @@ class Voting extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getInvitees()
+    public function getInvitees(): \yii\db\ActiveQuery
     {
         return $this->hasMany(Invitee::class, ['voting_id' => 'id']);
     }
@@ -141,7 +141,7 @@ class Voting extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getQuestions()
+    public function getQuestions(): \yii\db\ActiveQuery
     {
         return $this->hasMany(Question::class, ['voting_id' => 'id']);
     }
@@ -150,7 +150,7 @@ class Voting extends ActiveRecord
      * Get creator
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getCreator()
+    public function getCreator(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->created_by);
     }
@@ -159,7 +159,7 @@ class Voting extends ActiveRecord
      * Get user last updated
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getUpdater()
+    public function getUpdater(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->updated_by);
     }

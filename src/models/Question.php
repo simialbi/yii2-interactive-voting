@@ -45,7 +45,7 @@ class Question extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%voting_question}}';
     }
@@ -53,7 +53,7 @@ class Question extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['voting_id'], 'integer'],
@@ -77,7 +77,7 @@ class Question extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'blameable' => [
@@ -102,7 +102,7 @@ class Question extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('simialbi/voting/model/voting-question', 'ID'),
@@ -124,7 +124,7 @@ class Question extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         if (!$insert) {
             if ($this->isAttributeChanged('is_active')) {
@@ -143,7 +143,7 @@ class Question extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getAnswers()
+    public function getAnswers(): \yii\db\ActiveQuery
     {
         return $this->hasMany(Answer::class, ['question_id' => 'id']);
     }
@@ -153,7 +153,7 @@ class Question extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVoting()
+    public function getVoting(): \yii\db\ActiveQuery
     {
         return $this->hasOne(Voting::class, ['id' => 'voting_id']);
     }
@@ -163,7 +163,7 @@ class Question extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getQuestionAnswers()
+    public function getQuestionAnswers(): \yii\db\ActiveQuery
     {
         return $this->hasMany(QuestionAnswer::class, ['question_id' => 'id']);
     }
@@ -172,7 +172,7 @@ class Question extends ActiveRecord
      * Get creator
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getCreator()
+    public function getCreator(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->created_by);
     }
@@ -181,7 +181,7 @@ class Question extends ActiveRecord
      * Get user last updated
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getUpdater()
+    public function getUpdater(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->updated_by);
     }

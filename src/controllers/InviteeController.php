@@ -18,7 +18,7 @@ class InviteeController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'auth' => [
@@ -46,10 +46,10 @@ class InviteeController extends Controller
      *
      * @param integer $votingId
      *
-     * @return mixed
+     * @return string|\yii\web\Response
      * @throws \yii\base\InvalidConfigException
      */
-    public function actionCreate($votingId)
+    public function actionCreate(int $votingId)
     {
         if (Yii::$app->request->isPost) {
             $ids = Yii::$app->request->getBodyParam('users', []);
@@ -81,12 +81,12 @@ class InviteeController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $voting_id
      * @param string $user_id
-     * @return mixed
+     * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($voting_id, $user_id)
+    public function actionDelete(int $voting_id, string $user_id): \yii\web\Response
     {
         $this->findModel($voting_id, $user_id)->delete();
 
@@ -101,7 +101,7 @@ class InviteeController extends Controller
      * @return Invitee the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($voting_id, $user_id)
+    protected function findModel(int $voting_id, string $user_id): Invitee
     {
         if (($model = Invitee::findOne(['voting_id' => $voting_id, 'user_id' => $user_id])) !== null) {
             return $model;

@@ -35,7 +35,7 @@ class DefaultController extends Controller
     /**
      * {@inheritDoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -63,7 +63,7 @@ class DefaultController extends Controller
      * List all active votings
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $votings = Voting::find()
             ->alias('v')
@@ -85,7 +85,7 @@ class DefaultController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($votingId)
+    public function actionView(int $votingId): string
     {
         $model = $this->findVotingModel($votingId);
 
@@ -134,7 +134,7 @@ class DefaultController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionLive($votingId)
+    public function actionLive(int $votingId): string
     {
         $model = $this->findVotingModel($votingId);
         $query = $model->getQuestions()->alias('q')->orderBy(['{{q}}.[[created_at]]' => SORT_ASC]);
@@ -157,7 +157,7 @@ class DefaultController extends Controller
      * @throws NotFoundHttpException
      * @throws \yii\db\Exception
      */
-    public function actionSaveAnswer($questionId)
+    public function actionSaveAnswer(int $questionId): Response
     {
         $question = $this->findQuestionModel($questionId);
 
@@ -198,7 +198,7 @@ class DefaultController extends Controller
      * @return array
      * @throws NotFoundHttpException
      */
-    public function actionChartData($questionId)
+    public function actionChartData(int $questionId): array
     {
         $model = $this->findQuestionModel($questionId);
 
@@ -227,7 +227,7 @@ class DefaultController extends Controller
      * @return array
      * @throws NotFoundHttpException
      */
-    public function actionStatus($votingId, $referrer = null)
+    public function actionStatus(int $votingId, ?string $referrer = null): array
     {
         $model = $this->findVotingModel($votingId);
 
@@ -265,6 +265,7 @@ class DefaultController extends Controller
      * Login with email and code
      *
      * @return string|Response
+     * @throws \Exception
      */
     public function actionLogin()
     {
@@ -299,7 +300,8 @@ class DefaultController extends Controller
     }
 
     /**
-     * @return string
+     * Login with mobile authentication
+     * @return string|Response
      * @throws UnauthorizedHttpException
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
@@ -356,11 +358,10 @@ class DefaultController extends Controller
 
                     $response = $this->sendLoginCode($invitee);
 
-                    if (!$response->isOk) {
+                    if (!$response) {
                         Yii::$app->session->addFlash('danger', Yii::t(
                             'simialbi/voting/notifications',
-                            'There was an error sending you your code: {error}',
-                            ['error' => $response->statusMessage]
+                            'There was an error sending you your code'
                         ));
                         $model->scenario = $model::SCENARIO_STEP_1;
                     }
@@ -392,9 +393,10 @@ class DefaultController extends Controller
     /**
      * Log in a user by identity token
      * @param string $token
+     * @return Response
      * @throws UnauthorizedHttpException
      */
-    public function actionLoginToken($token)
+    public function actionLoginToken(string $token): Response
     {
         if (!Yii::$app->user->loginByAccessToken($token)) {
             throw new UnauthorizedHttpException();
@@ -406,11 +408,11 @@ class DefaultController extends Controller
     /**
      * Finds the Voting model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param mixed $id
      * @return Voting the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findVotingModel($id)
+    protected function findVotingModel($id): Voting
     {
         if (($model = Voting::findOne($id)) !== null) {
             return $model;
@@ -422,11 +424,11 @@ class DefaultController extends Controller
     /**
      * Finds the Question model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param mixed $id
      * @return Question the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findQuestionModel($id)
+    protected function findQuestionModel($id): Question
     {
         if (($model = Question::findOne($id)) !== null) {
             return $model;
@@ -438,26 +440,23 @@ class DefaultController extends Controller
     /**
      * Send login code
      * @param Invitee $invitee
-     * @return \simialbi\yii2\websms\Response
+     * @return boolean
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
-    protected function sendLoginCode($invitee)
+    protected function sendLoginCode(Invitee $invitee): bool
     {
-        /** @var \simialbi\yii2\websms\Connection $sms */
+        /** @var \simialbi\yii2\sms\ProviderInterface $sms */
         $sms = $this->module->get('sms', true);
         $voting = $invitee->voting;
-        $message = $sms->createMessage();
-        $message
-            ->id("voting-{$voting->id}-code-{$invitee->user_id}")
-            ->category($message::CATEGORY_INFORMATIONAL)
-            ->content(Yii::t('simialbi/voting', "Your Code for {voting}\n{code}", [
+        $message = $sms->compose()
+            ->setTo($invitee->user->{$this->module->mobileField})
+            ->setSubject('Your code')
+            ->setBody(Yii::t('simialbi/voting', "Your Code for {voting}\n{code}", [
                 'voting' => $voting->subject,
                 'code' => $invitee->code
-            ]))
-            ->type($message::MESSAGE_TYPE_TEXT)
-            ->addRecipient(preg_replace('#[^0-9]#', '', $invitee->user->{$this->module->mobileField}));
+            ]));
         return $message->send();
     }
 }

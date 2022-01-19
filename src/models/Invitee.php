@@ -29,7 +29,7 @@ class Invitee extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%voting_invitee}}';
     }
@@ -37,7 +37,7 @@ class Invitee extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['voting_id'], 'integer'],
@@ -60,7 +60,7 @@ class Invitee extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'blameable' => [
@@ -83,7 +83,7 @@ class Invitee extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'voting_id' => Yii::t('simialbi/voting/model/voting-invitee', 'Voting'),
@@ -99,7 +99,7 @@ class Invitee extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         if ($insert && !$this->code) {
             $this->code = StringHelper::generateRandomString(10, '23456789abcdefghjkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ');
@@ -113,7 +113,7 @@ class Invitee extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVoting()
+    public function getVoting(): \yii\db\ActiveQuery
     {
         return $this->hasOne(Voting::class, ['id' => 'voting_id']);
     }
@@ -122,7 +122,7 @@ class Invitee extends ActiveRecord
      * Get user
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getUser()
+    public function getUser(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->user_id);
     }
@@ -131,7 +131,7 @@ class Invitee extends ActiveRecord
      * Get creator
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getCreator()
+    public function getCreator(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->created_by);
     }
@@ -140,7 +140,7 @@ class Invitee extends ActiveRecord
      * Get user last updated
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getUpdater()
+    public function getUpdater(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->updated_by);
     }

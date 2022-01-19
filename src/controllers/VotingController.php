@@ -21,7 +21,7 @@ class VotingController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'auth' => [
@@ -55,9 +55,9 @@ class VotingController extends Controller
 
     /**
      * Lists all Voting models.
-     * @return mixed
+     * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new SearchVoting();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -74,10 +74,10 @@ class VotingController extends Controller
     /**
      * Displays a single Voting model.
      * @param integer $id
-     * @return mixed
+     * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView(int $id): string
     {
         $questionSearchModel = new SearchQuestion();
         $questionDataProvider = $questionSearchModel->search(Yii::$app->request->queryParams, $id);
@@ -98,7 +98,7 @@ class VotingController extends Controller
     /**
      * Creates a new Voting model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
@@ -117,10 +117,10 @@ class VotingController extends Controller
      * Creates a new Voting model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
-     * @return mixed
+     * @return string|\yii\web\Response
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
 
@@ -137,12 +137,12 @@ class VotingController extends Controller
      * Deletes an existing Voting model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
-     * @return mixed
+     * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id): \yii\web\Response
     {
         $this->findModel($id)->delete();
 
@@ -157,7 +157,7 @@ class VotingController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException
      */
-    public function actionActivate($id)
+    public function actionActivate(int $id): \yii\web\Response
     {
         $model = $this->findModel($id);
 
@@ -170,11 +170,11 @@ class VotingController extends Controller
     /**
      * Finds the Voting model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param mixed $id
      * @return Voting the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id): Voting
     {
         if (($model = Voting::findOne($id)) !== null) {
             return $model;

@@ -28,7 +28,7 @@ class Answer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%voting_answer}}';
     }
@@ -36,7 +36,7 @@ class Answer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['question_id'], 'integer'],
@@ -56,7 +56,7 @@ class Answer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'blameable' => [
@@ -79,7 +79,7 @@ class Answer extends ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('simialbi/voting/model/voting-answer', 'ID'),
@@ -97,7 +97,7 @@ class Answer extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getQuestion()
+    public function getQuestion(): \yii\db\ActiveQuery
     {
         return $this->hasOne(Question::class, ['id' => 'question_id']);
     }
@@ -107,7 +107,7 @@ class Answer extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVoting()
+    public function getVoting(): \yii\db\ActiveQuery
     {
         return $this->hasOne(Voting::class, ['id' => 'voting_id'])
             ->via('question');
@@ -117,7 +117,7 @@ class Answer extends ActiveRecord
      * Get creator
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getCreator()
+    public function getCreator(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->created_by);
     }
@@ -126,7 +126,7 @@ class Answer extends ActiveRecord
      * Get user last updated
      * @return \simialbi\yii2\models\UserInterface|null
      */
-    public function getUpdater()
+    public function getUpdater(): ?\simialbi\yii2\models\UserInterface
     {
         return call_user_func([Yii::$app->user->identityClass, 'findIdentity'], $this->updated_by);
     }

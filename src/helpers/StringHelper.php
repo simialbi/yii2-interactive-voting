@@ -17,7 +17,7 @@ class StringHelper extends \yii\helpers\StringHelper
      * @param integer $length the length of the key in characters
      * @param string|null $characters characters to be used to generate random string
      */
-    public static function generateRandomString($length = 10, $characters = null)
+    public static function generateRandomString(int $length = 10, ?string $characters = null): string
     {
         if (null === $characters) {
             $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
