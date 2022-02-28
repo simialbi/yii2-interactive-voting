@@ -65,6 +65,8 @@ class Invitee extends ActiveRecord
         return [
             'blameable' => [
                 'class' => BlameableBehavior::class,
+                'value' => Yii::$app instanceof \yii\console\Application ? '2' : null,
+                'preserveNonEmptyValues' => true,
                 'attributes' => [
                     self::EVENT_BEFORE_INSERT => ['created_by', 'updated_by'],
                     self::EVENT_BEFORE_UPDATE => 'updated_by'
