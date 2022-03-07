@@ -255,6 +255,10 @@ msgid "Allow multiple answers?"
 msgstr "Allow multiple answers?"
 
 msgctxt "simialbi/voting/model/voting-question"
+msgid "Allow empty answers?"
+msgstr "Allow empty answers?"
+
+msgctxt "simialbi/voting/model/voting-question"
 msgid "Created at"
 msgstr "Created at"
 

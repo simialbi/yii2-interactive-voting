@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property boolean $is_active Current question to be answered
  * @property boolean $is_finished Is the question finished?
  * @property boolean $multiple_answers_allowed Allow multiple answers?
+ * @property boolean $empty_allowed Allow empty answers?
  * @property string|integer $created_by
  * @property string|integer $updated_by
  * @property string|integer $created_at
@@ -66,9 +67,9 @@ class Question extends ActiveRecord
                 'targetClass' => Voting::class,
                 'targetAttribute' => ['voting_id' => 'id']
             ],
-            [['is_active', 'is_finished', 'multiple_answers_allowed'], 'boolean'],
+            [['is_active', 'is_finished', 'multiple_answers_allowed', 'empty_allowed'], 'boolean'],
 
-            [['is_active', 'is_finished', 'multiple_answers_allowed'], 'default', 'value' => false],
+            [['is_active', 'is_finished', 'multiple_answers_allowed', 'empty_allowed'], 'default', 'value' => false],
 
             [['voting_id', 'subject', 'is_active', 'is_finished'], 'required']
         ];
@@ -112,6 +113,7 @@ class Question extends ActiveRecord
             'is_active' => Yii::t('simialbi/voting/model/voting-question', 'Is active'),
             'is_finished' => Yii::t('simialbi/voting/model/voting-question', 'Is finished'),
             'multiple_answers_allowed' => Yii::t('simialbi/voting/model/voting-question', 'Allow multiple answers?'),
+            'empty_allowed' => Yii::t('simialbi/voting/model/voting-question', 'Allow empty answers?'),
             'created_by' => Yii::t('simialbi/voting/model/voting-question', 'Created by'),
             'updated_by' => Yii::t('simialbi/voting/model/voting-question', 'Updated by'),
             'created_at' => Yii::t('simialbi/voting/model/voting-question', 'Created at'),

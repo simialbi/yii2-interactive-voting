@@ -161,21 +161,32 @@ class DefaultController extends Controller
     {
         $question = $this->findQuestionModel($questionId);
 
-        if (Yii::$app->request->post() && null !== ($answers = Yii::$app->request->getBodyParam('answer'))) {
-            if (!is_array($answers)) {
-                $answers = [$answers];
-            }
-            if (!$question->multiple_answers_allowed) {
-                $answers = [$answers[0]];
-            }
+        if (Yii::$app->request->post()) {
             $anonymous = Yii::$app->request->getBodyParam('anonymous', false);
-            foreach ($answers as $answer) {
+            if (null !== ($answers = Yii::$app->request->getBodyParam('answer'))) {
+                if (!is_array($answers)) {
+                    $answers = [$answers];
+                }
+                if (!$question->multiple_answers_allowed) {
+                    $answers = [$answers[0]];
+                }
+                foreach ($answers as $answer) {
+                    $questionAnswer = new QuestionAnswer([
+                        'user_id' => $anonymous ? null : (string)Yii::$app->user->id,
+                        'user_ip' => Yii::$app->request->userIP,
+                        'session_id' => Yii::$app->session->id,
+                        'question_id' => $questionId,
+                        'answer_id' => $answer
+                    ]);
+                    $questionAnswer->save();
+                }
+            } elseif ($question->empty_allowed) {
                 $questionAnswer = new QuestionAnswer([
                     'user_id' => $anonymous ? null : (string)Yii::$app->user->id,
                     'user_ip' => Yii::$app->request->userIP,
                     'session_id' => Yii::$app->session->id,
                     'question_id' => $questionId,
-                    'answer_id' => $answer
+                    'answer_id' => null
                 ]);
                 $questionAnswer->save();
             }
