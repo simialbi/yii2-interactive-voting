@@ -5,8 +5,6 @@ use kartik\select2\Select2;
 use rmrevin\yii\fontawesome\FAS;
 use yii\bootstrap4\Html;
 
-//use yii\widgets\Pjax;
-
 /* @var $this yii\web\View */
 /* @var $searchModel simialbi\yii2\voting\models\SearchVoting */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,11 +14,6 @@ $this->title = Yii::t('simialbi/voting/voting', 'Votings');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="voting-index">
-    <p>
-        <?= Html::a(Yii::t('simialbi/voting/voting', 'Create Voting'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-
     <?= GridView::widget([
         'bsVersion' => 4,
         'dataProvider' => $dataProvider,
@@ -166,7 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'update' => Yii::$app->user->can('administrateVoting'),
                     'activate' => function ($model) {
                         /** @var $model \simialbi\yii2\voting\models\Voting */
-                        return Yii::$app->user->can('manageVoting') && $model->is_moderated && !$model->is_active && !$model->is_finished;
+                        return Yii::$app->user->can('manageVoting') && !$model->is_active && !$model->is_finished;
                     }
                 ]
             ],
