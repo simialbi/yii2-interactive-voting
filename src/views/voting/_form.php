@@ -1,6 +1,6 @@
 <?php
 
-use bizley\quill\Quill;
+use marqu3s\summernote\Summernote;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
@@ -9,67 +9,60 @@ use yii\bootstrap4\Html;
 /* @var $form yii\bootstrap4\ActiveForm */
 ?>
 
-<div class="voting-form">
+    <div class="voting-form">
+        <?php $form = ActiveForm::begin(['id' => 'votingForm']); ?>
 
-    <?php $form = ActiveForm::begin(['id' => 'votingForm']); ?>
+        <?= $form->field($model, 'subject')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'subject')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'is_moderated', [
-        'labelOptions' => [
-            'class' => 'custom-control-label'
-        ]
-    ])->checkbox() ?>
-
-    <?= $form->field($model, 'is_with_mobile_registration', [
-        'labelOptions' => [
-            'class' => 'custom-control-label'
-        ]
-    ])->checkbox() ?>
-
-    <?= $form->field($model, 'show_results', [
-        'labelOptions' => [
-            'class' => 'custom-control-label'
-        ]
-    ])->checkbox(['disabled' => (bool)$model->is_moderated]); ?>
-
-    <?= $form->field($model, 'finished_message')->widget(Quill::class, [
-        'id' => 'quill',
-        'localAssets' => true,
-        'options' => [
-            'style' => [
-                'height' => 'auto'
+        <?= $form->field($model, 'is_moderated', [
+            'labelOptions' => [
+                'class' => 'custom-control-label'
             ]
-        ],
-        'readOnly' => $model->show_results,
-        'toolbarOptions' => [
-            [
-                ['header' => 1],
-                ['header' => 2],
-            ],
-            ['bold', 'italic', 'underline', 'strike'],
-            [
-                ['script' => 'sub'],
-                ['script' => 'super']
-            ],
-            [
-                ['list' => 'ordered'],
-                ['list' => 'bullet'],
-            ]
-        ]
-    ]) ?>
+        ])->checkbox() ?>
 
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('simialbi/voting', 'Save'), ['class' => ['btn', 'btn-success']]) ?>
+        <?= $form->field($model, 'is_with_mobile_registration', [
+            'labelOptions' => [
+                'class' => 'custom-control-label'
+            ]
+        ])->checkbox() ?>
+
+        <?= $form->field($model, 'show_results', [
+            'labelOptions' => [
+                'class' => 'custom-control-label'
+            ]
+        ])->checkbox(['disabled' => (bool)$model->is_moderated]); ?>
+
+        <?= $form->field($model, 'finished_message')->widget(Summernote::class, [
+            'options' => [
+                'style' => [
+                    'height' => 'auto'
+                ]
+            ],
+            'defaultClientOptions' => [
+                'styleTags' => [
+                    'h1', 'h2', 'p'
+                ],
+                'toolbar' => [
+                    ['actions', ['undo', 'redo']],
+                    ['para', ['style']],
+                    ['lists', ['ol', 'ul']],
+                    ['ruler', ['hr']],
+                    ['font', ['bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript']],
+                    ['clear', ['clear']],
+                ]
+            ]
+        ]) ?>
+
+        <div class="form-group">
+            <?= Html::submitButton(Yii::t('simialbi/voting', 'Save'), ['class' => ['btn', 'btn-success']]) ?>
+        </div>
+
+        <?php ActiveForm::end(); ?>
+
     </div>
-
-    <?php ActiveForm::end(); ?>
-
-</div>
 <?php
-$quillId = 'q_quill';
 $isModeratedId = Html::getInputId($model, 'is_moderated');
 $showResultsId = Html::getInputId($model, 'show_results');
 $finishedMessageId = Html::getInputId($model, 'finished_message');
@@ -83,11 +76,12 @@ jQuery('#$isModeratedId').on('change.yii', function () {
     }
 });
 jQuery('#$showResultsId').on('change.yii', function () {
-    q_quill.enable(!jQuery(this).is(':checked'));
+    var enable = !jQuery(this).is(':checked') ? 'enable' : 'disable';
+    jQuery('#$finishedMessageId').summernote(enable);
     if (jQuery(this).is(':checked')) {
         jQuery('#{$form->id}').yiiActiveForm('updateAttribute', '$finishedMessageId', null);
     } else {
-        q_quill.focus();
+        jQuery('#$finishedMessageId').summernote('focus');
     }
 });
 JS;
